@@ -1,3 +1,9 @@
 <resources>
-    <string name="app_name">Projet7</string>
+    <string name="app_name">Go 4 Lunch</string>
+
+    <!-- Connection -->
+    <string name="login_facebook">Sign in with Facebook</string>
+    <string name="login_google">Sign in with Google</string>
+    <string name="login_mail">Sign in with Mail</string>
+    <string name="login_Twitter">Sign in with Twitter</string>
 </resources>

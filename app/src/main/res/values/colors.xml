@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Login Connection -->
+    <color name="facebook">#3B5998</color>
+    <color name="google">#DB4A39</color>
+    <color name="mail">#F5B041</color>
+    <color name="twitter">#00ACEE</color>
 </resources>
