@@ -6,4 +6,7 @@
     <string name="login_google">Sign in with Google</string>
     <string name="login_mail">Sign in with Mail</string>
     <string name="login_Twitter">Sign in with Twitter</string>
+
+    <!-- ID -->
+    <string name="default_web_client_id">880581493208-hurqlvhtjiafesi997hkn6f53ajoail8.apps.googleusercontent.com</string>
 </resources>
