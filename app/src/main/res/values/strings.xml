@@ -9,4 +9,11 @@
 
     <!-- ID -->
     <string name="default_web_client_id">880581493208-hurqlvhtjiafesi997hkn6f53ajoail8.apps.googleusercontent.com</string>
+    <string name="facebook_application_id">974965846857226</string>
+    <string name="fb_login_protocol_scheme">fb974965846857226</string>
+    <string name="facebook_client_token">343b043ccfc8383e7a915da4698b8df8</string>
+    <string name="twitter_api">eEhWi7tfLEAf0ngmFK8nxbEnX</string>
+    <string name="twitter_api_secret">f8cD2YO8oyAIS8swLYWrUZlJ7addUzs9bNgj7Zh2QZtyUO3ssl</string>
+    <string name="twitter_client">NnJJTnU0VHdkZ0RCM1gxYTRSUUM6MTpjaQ</string>
+    <string name="twitter_client_secret">9vuEIF6ydAmdQErEBOl3uwOybJBotaqH_76_A5dDE_G5GXLxMS</string>
 </resources>
