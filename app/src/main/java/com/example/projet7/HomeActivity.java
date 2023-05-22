@@ -1,23 +1,36 @@
 package com.example.projet7;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.content.pm.PermissionInfo;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import com.example.projet7.databinding.ActivityHomeBinding;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
-
-    enum NavFrag { MapView, ListView, Workmates }
+    String permission = Manifest.permission.ACCESS_FINE_LOCATION;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +38,8 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-        replaceFragment(new MapViewFragment());
-
         setSupportActionBar(binding.toolbar);
+        permissionLauncher.launch(permission);
 
 //        binding.btnLogOut.setOnClickListener(v -> {
 //            AuthUI.getInstance().signOut(this)
@@ -62,4 +74,17 @@ public class HomeActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    private ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
+            new ActivityResultContracts.RequestPermission(),
+            new ActivityResultCallback<Boolean>() {
+                @Override
+                public void onActivityResult(Boolean isGranted) {
+                    if (isGranted) {
+                        replaceFragment(new MapViewFragment());
+                    } else {
+                        Log.d("Permission", "permission denied");
+                    }
+                }
+            }
+    );
 }
