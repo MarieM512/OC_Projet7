@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModel;
 
+import com.example.projet7.model.ResponseResult;
+import com.example.projet7.model.Restaurant;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -23,6 +25,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -33,58 +37,57 @@ public class HomeViewModel extends ViewModel {
 
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
-    private Double latitude;
-    private Double longitude;
+    private Double latitude = 0.00;
+    private Double longitude = 0.00;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private String jsonResponse;
 
-    void getCurrentLocation(Context context, Activity activity, GoogleMap map) {
+    void getCurrentLocation(Context context, GoogleMap map) {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
+                    .setWaitForAccurateLocation(false)
+                    .setMinUpdateIntervalMillis(2000)
+                    .setMaxUpdateDelayMillis(100)
+                    .build();
+            mLocationCallback = new LocationCallback() {
+                @Override
+                public void onLocationResult(@NonNull LocationResult locationResult) {
+                    super.onLocationResult(locationResult);
+                    if (locationResult.getLastLocation() == null) {
+                        Log.d("location", "Location not updated");
+                    } else {
+                        Log.d("location", "Location updated");
+                        if (latitude == 0.00 && longitude == 0.00) {
+                            latitude = locationResult.getLastLocation().getLatitude();
+                            longitude = locationResult.getLastLocation().getLongitude();
+                            LatLng pos = new LatLng(latitude, longitude);
+                            map.moveCamera(CameraUpdateFactory.newLatLng(pos));
+                            map.setMinZoomPreference(15);
+                        }
+                    }
+                }
+            };
+            mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper());
+        }
+    }
+
+    void getLastLocation(Context context, Activity activity, GoogleMap map) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mFusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener(activity, new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
-                            if (location != null) {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                                LatLng pos = new LatLng(latitude, longitude);
-                                map.moveCamera(CameraUpdateFactory.newLatLng(pos));
-                                map.setMinZoomPreference(15);
-                                try {
-                                    fetchRestaurant();
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
-                            } else {
-                                Toast.makeText(context, "Failed to location, please click on location button", Toast.LENGTH_SHORT).show();
-                                updateLocation(context);
-                            }
+                            latitude = location.getLatitude();
+                            longitude = location.getLongitude();
+                            LatLng pos = new LatLng(latitude, longitude);
+                            map.moveCamera(CameraUpdateFactory.newLatLng(pos));
+                            map.setMinZoomPreference(15);
+                            Log.d("location", "Location updated");
                         }
                     });
         }
-    }
 
-    private void updateLocation(Context context) {
-        mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
-                .setWaitForAccurateLocation(false)
-                .setMinUpdateIntervalMillis(2000)
-                .setMaxUpdateDelayMillis(100)
-                .build();
-        mLocationCallback = new LocationCallback() {
-            @Override
-            public void onLocationResult(@NonNull LocationResult locationResult) {
-                super.onLocationResult(locationResult);
-                if (locationResult == null) {
-                    Log.d("location", "Location not updated");
-                } else {
-                    Log.d("location", "location updated");
-                }
-            }
-        };
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper());
-        }
     }
 
     private void fetchRestaurant() throws IOException {
@@ -108,5 +111,21 @@ public class HomeViewModel extends ViewModel {
             }
         });
         requestThread.start();
+    }
+
+    void readJson() {
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        Gson gson = builder.create();
+        ResponseResult responseResult = gson.fromJson(jsonResponse, ResponseResult.class);
+
+
+        for (Restaurant restaurant : responseResult.getRestaurants()) {
+            System.out.println(restaurant.getName());
+        }
+
+        System.out.println(responseResult);
+        jsonResponse = gson.toJson(responseResult);
+        System.out.println(jsonResponse);
     }
 }

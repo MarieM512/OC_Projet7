@@ -52,7 +52,8 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.getCurrentLocation(requireContext(), requireActivity(), map);
+//                viewModel.readJson();
+                viewModel.getLastLocation(requireContext(), requireActivity(), map);
             }
         });
         return view;
@@ -61,6 +62,6 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         map = googleMap;
-        viewModel.getCurrentLocation(requireContext(), requireActivity(), map);
+        viewModel.getCurrentLocation(requireContext(), map);
     }
 }
