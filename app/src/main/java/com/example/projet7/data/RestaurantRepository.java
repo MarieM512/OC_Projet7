@@ -48,7 +48,7 @@ public class RestaurantRepository {
     }
 
     public String getImg(int position) {
-        return mResponseResult.getRestaurants().get(position).getCategories().get(0).getIcon().getPrefix() + mResponseResult.getRestaurants().get(position).getCategories().get(0).getIcon().getSuffix();
+        return mResponseResult.getRestaurants().get(position).getCategories().get(0).getIcon().getPrefix() + "88.png";
     }
 
 }

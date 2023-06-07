@@ -15,7 +15,6 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
     TextView detail;
     TextView address;
     TextView distance;
-    ImageView person;
     TextView reserved;
     ImageView image;
 
@@ -25,7 +24,6 @@ public class RestaurantViewHolder extends RecyclerView.ViewHolder {
         detail = (TextView) itemView.findViewById(R.id.detailCard);
         address = (TextView) itemView.findViewById(R.id.addressCard);
         distance = (TextView) itemView.findViewById(R.id.distanceCard);
-        person = (ImageView) itemView.findViewById(R.id.personCard);
         reserved = (TextView) itemView.findViewById(R.id.reservedCard);
         image = (ImageView) itemView.findViewById(R.id.imageCard);
     }

@@ -1,7 +1,9 @@
 package com.example.projet7.data;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.google.android.gms.maps.GoogleMap;
 
 public interface ApiInterface {
-    void getLatLng(Double latitude, Double longitude);
+    void setParams(Double latitude, Double longitude, GoogleMap map);
 }

@@ -8,9 +8,10 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.projet7.data.RestaurantRepository;
 import com.example.projet7.model.Restaurant;
-import com.squareup.picasso.Picasso;
+
 
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
         holder.name.setText(mRestaurantRepository.getName(position));
         holder.detail.setText(mRestaurantRepository.getType(position));
         holder.address.setText(mRestaurantRepository.getAddress(position));
-//        Picasso.get().load(mRestaurantRepository.getImg(position)).into(holder.image);
+        Glide.with(mContext).load(mRestaurantRepository.getImg(position)).centerCrop().into(holder.image);
         holder.distance.setText(mRestaurantRepository.getDistance(position));
         holder.itemView.setOnClickListener(v -> {
             System.out.println("hiiii");

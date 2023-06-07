@@ -60,8 +60,7 @@ public class HomeViewModel extends ViewModel {
                             LatLng pos = new LatLng(latitude, longitude);
                             map.moveCamera(CameraUpdateFactory.newLatLng(pos));
                             map.setMinZoomPreference(15);
-                            mOkhttpService.getLatLng(latitude, longitude);
-                            displayRestaurant(map);
+                            mOkhttpService.setParams(latitude, longitude, map);
                         }
                     }
                 }
@@ -81,32 +80,10 @@ public class HomeViewModel extends ViewModel {
                             LatLng pos = new LatLng(latitude, longitude);
                             map.moveCamera(CameraUpdateFactory.newLatLng(pos));
                             map.setMinZoomPreference(15);
-                            displayRestaurant(map);
+                            mOkhttpService.setParams(latitude, longitude, map);
                             Log.d("location", "Location updated");
                         }
                     });
-        }
-    }
-
-    void displayRestaurant(GoogleMap map) {
-        GsonBuilder builder = new GsonBuilder();
-        builder.setPrettyPrinting();
-        Gson gson = builder.create();
-        ResponseResult responseResult = gson.fromJson(mOkhttpService.getResponseApi(), ResponseResult.class);
-        Double latitude;
-        Double longitude;
-        String name;
-
-        if (!mOkhttpService.getResponseApi().isEmpty()) {
-            for (Restaurant restaurant : responseResult.getRestaurants()) {
-                latitude = restaurant.getGeocodes().getMain().getLatitude();
-                longitude = restaurant.getGeocodes().getMain().getLongitude();
-                name = restaurant.getName();
-                LatLng pos = new LatLng(latitude, longitude);
-                map.addMarker(new MarkerOptions()
-                        .title(name)
-                        .position(pos));
-            }
         }
     }
 }
