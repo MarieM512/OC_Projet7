@@ -2,10 +2,13 @@ package com.example.projet7.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Icon {
+import java.util.List;
+
+public class PlaceResult {
 
     @SerializedName("prefix")
     private String prefix;
+
     @SerializedName("suffix")
     private String suffix;
 

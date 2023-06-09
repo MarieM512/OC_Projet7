@@ -38,10 +38,10 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
         holder.name.setText(mRestaurantRepository.getName(position));
         holder.detail.setText(mRestaurantRepository.getType(position));
         holder.address.setText(mRestaurantRepository.getAddress(position));
-        Glide.with(mContext).load(mRestaurantRepository.getImg(position)).centerCrop().into(holder.image);
+        Glide.with(mContext).load(mRestaurantRepository.getImg(mRestaurantRepository.getName(position))).centerCrop().into(holder.image);
         holder.distance.setText(mRestaurantRepository.getDistance(position));
         holder.itemView.setOnClickListener(v -> {
-            System.out.println("hiiii");
+            System.out.println(position);
         });
     }
 

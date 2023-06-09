@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Restaurant {
 
+    @SerializedName("fsq_id")
+    private String fsq_id;
     @SerializedName("categories")
     private List<Category> categories;
     @SerializedName("distance")
@@ -16,6 +18,14 @@ public class Restaurant {
     private Location location;
     @SerializedName("name")
     private String name;
+
+    public String getFsq_id() {
+        return fsq_id;
+    }
+
+    public void setFsq_id(String fsq_id) {
+        this.fsq_id = fsq_id;
+    }
 
     public List<Category> getCategories() {
         return categories;

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.util.List;
+import java.util.Objects;
 
 public class RestaurantRepository {
 
@@ -47,8 +48,12 @@ public class RestaurantRepository {
         return mResponseResult.getRestaurants().get(position).getDistance() + "m";
     }
 
-    public String getImg(int position) {
-        return mResponseResult.getRestaurants().get(position).getCategories().get(0).getIcon().getPrefix() + "88.png";
+    public String getImg(String name) {
+        String url = mOkhttpService.getUrlImg(name);
+        if (Objects.equals(url, "invalid")) {
+            return "https://play-lh.googleusercontent.com/YBChvJfwfwtGHAPiPYLn-c5jCMXS0p2CyT1TWrsFtjyrPn9foIMjLf62UuRUccwAwTI";
+        } else {
+            return url;
+        }
     }
-
 }
