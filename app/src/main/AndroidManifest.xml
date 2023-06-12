@@ -22,7 +22,7 @@
             android:value="AIzaSyBOo_rlXsu72U4m0NGC_WiBz0iL6Wzg8tI"/>
         <activity
             android:name=".HomeActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
