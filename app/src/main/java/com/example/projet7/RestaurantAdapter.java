@@ -20,10 +20,12 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     Context mContext;
     List<Restaurant> mRestaurantList;
     private RestaurantRepository mRestaurantRepository = RestaurantRepository.getInstance();
+    private RecyclerViewInterface mRecyclerViewInterface;
 
-    public RestaurantAdapter(Context context, List<Restaurant> restaurantList) {
+    public RestaurantAdapter(Context context, List<Restaurant> restaurantList, RecyclerViewInterface recyclerViewInterface) {
         mContext = context;
         mRestaurantList = restaurantList;
+        mRecyclerViewInterface = recyclerViewInterface;
     }
 
     @NonNull
@@ -38,10 +40,10 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
         holder.name.setText(mRestaurantRepository.getName(position));
         holder.detail.setText(mRestaurantRepository.getType(position));
         holder.address.setText(mRestaurantRepository.getAddress(position));
-        Glide.with(mContext).load(mRestaurantRepository.getImg(mRestaurantRepository.getName(position))).centerCrop().into(holder.image);
+        Glide.with(mContext).load(mRestaurantRepository.getImgRV(mRestaurantRepository.getName(position))).centerCrop().into(holder.image);
         holder.distance.setText(mRestaurantRepository.getDistance(position));
         holder.itemView.setOnClickListener(v -> {
-            System.out.println(position);
+            mRecyclerViewInterface.onItemClick(position);
         });
     }
 

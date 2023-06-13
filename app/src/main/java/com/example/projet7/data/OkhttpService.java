@@ -1,18 +1,22 @@
 package com.example.projet7.data;
 
+import android.app.Activity;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
-import androidx.fragment.app.FragmentActivity;
+import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
-import com.example.projet7.HomeActivity;
-import com.example.projet7.HomeViewModel;
+import com.example.projet7.R;
 import com.example.projet7.model.PlaceResult;
 import com.example.projet7.model.ResponseResult;
 import com.example.projet7.model.Restaurant;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,14 +26,14 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class OkhttpService implements ApiInterface {
     private String jsonResponse = "";
     public String jsonImage = "";
-    private Map<String, String> jsonResponseImg = new HashMap<>();
+    private Map<String, String> jsonResponseImgRV = new HashMap<>();
+    private Map<String, String> jsonResponseImgDetail = new HashMap<>();
     private Double latitude;
     private Double longitude;
     private String id;
@@ -38,6 +42,8 @@ public class OkhttpService implements ApiInterface {
     private GoogleMap mGoogleMap;
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
+    private Activity mActivity;
+    private RestaurantRepository mRestaurantRepository;
 
     private void getRestaurantData() {
         OkHttpClient client = new OkHttpClient();
@@ -89,10 +95,13 @@ public class OkhttpService implements ApiInterface {
                         jsonImage = response.body().string();
                         if (jsonImage.startsWith("[")){
                             PlaceResult[] mPlaceResult = gson.fromJson(jsonImage, PlaceResult[].class);
-                            String url = mPlaceResult[0].getPrefix() + "64x64" + mPlaceResult[0].getSuffix();
-                            jsonResponseImg.put(name, url);
+                            String urlRV = mPlaceResult[0].getPrefix() + "64x64" + mPlaceResult[0].getSuffix();
+                            String urlDetail = mPlaceResult[0].getPrefix() + "410x300" + mPlaceResult[0].getSuffix();
+                            jsonResponseImgRV.put(name, urlRV);
+                            jsonResponseImgDetail.put(name, urlDetail);
                         } else {
-                            jsonResponseImg.put(name, "invalid");
+                            jsonResponseImgRV.put(name, "invalid");
+                            jsonResponseImgDetail.put(name, "invalid");
                         }
                     }
                 });
@@ -115,8 +124,12 @@ public class OkhttpService implements ApiInterface {
         return jsonResponse;
     }
 
-    public String getUrlImg(String name) {
-        return jsonResponseImg.get(name);
+    public String getUrlImgRV(String name) {
+        return jsonResponseImgRV.get(name);
+    }
+
+    public String getUrlImgDetail(String name) {
+        return jsonResponseImgDetail.get(name);
     }
 
     @Override
@@ -125,6 +138,10 @@ public class OkhttpService implements ApiInterface {
         this.longitude = longitude;
         this.mGoogleMap = map;
         getRestaurantData();
+    }
+
+    public void setActivity(Activity activity) {
+        this.mActivity = activity;
     }
 
     private void getRestaurantMarker() {
@@ -147,6 +164,22 @@ public class OkhttpService implements ApiInterface {
                         mGoogleMap.addMarker(new MarkerOptions()
                                 .title(name)
                                 .position(pos));
+                        mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                            @Override
+                            public boolean onMarkerClick(@NonNull Marker marker) {
+                                mRestaurantRepository = RestaurantRepository.getInstance();
+                                String positionString = marker.getId().substring(1);
+                                Integer position = Integer.parseInt(positionString);
+                                NavController navController = Navigation.findNavController(mActivity, R.id.nav_host_fragment);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("name", mRestaurantRepository.getName(position));
+                                bundle.putString("type", mRestaurantRepository.getType(position));
+                                bundle.putString("address", mRestaurantRepository.getAddress(position));
+                                bundle.putString("image", mRestaurantRepository.getImgDetail(mRestaurantRepository.getName(position)));
+                                navController.navigate(R.id.action_nav_map_to_nav_detail, bundle);
+                                return false;
+                            }
+                        });
                         getImgPlace(name, id);
                     }
                 } else {

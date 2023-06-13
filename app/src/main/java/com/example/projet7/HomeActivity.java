@@ -20,6 +20,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
     String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +50,8 @@ public class HomeActivity extends AppCompatActivity {
                 @Override
                 public void onActivityResult(Boolean isGranted) {
                     if (isGranted) {
+                        navController = Navigation.findNavController(HomeActivity.this, R.id.nav_host_fragment);
                         setSupportActionBar(binding.toolbar);
-                        NavController navController = Navigation.findNavController(HomeActivity.this, R.id.nav_host_fragment);
                         NavigationUI.setupWithNavController(binding.navigationBar, navController);
                         NavigationUI.setupWithNavController(binding.toolbar, navController);
                         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_map, R.id.nav_list, R.id.nav_workmates).build();

@@ -48,8 +48,17 @@ public class RestaurantRepository {
         return mResponseResult.getRestaurants().get(position).getDistance() + "m";
     }
 
-    public String getImg(String name) {
-        String url = mOkhttpService.getUrlImg(name);
+    public String getImgRV(String name) {
+        String url = mOkhttpService.getUrlImgRV(name);
+        if (Objects.equals(url, "invalid")) {
+            return "https://play-lh.googleusercontent.com/YBChvJfwfwtGHAPiPYLn-c5jCMXS0p2CyT1TWrsFtjyrPn9foIMjLf62UuRUccwAwTI";
+        } else {
+            return url;
+        }
+    }
+
+    public String getImgDetail(String name) {
+        String url = mOkhttpService.getUrlImgDetail(name);
         if (Objects.equals(url, "invalid")) {
             return "https://play-lh.googleusercontent.com/YBChvJfwfwtGHAPiPYLn-c5jCMXS0p2CyT1TWrsFtjyrPn9foIMjLf62UuRUccwAwTI";
         } else {
