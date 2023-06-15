@@ -23,7 +23,7 @@
             app:destination="@id/nav_detail" />
     </fragment>
 
-    <fragment android:name="com.example.projet7.WorkmatesFragment"
+    <fragment android:name="com.example.projet7.ui.workmates.WorkmatesFragment"
         android:label="@string/toolbar_title_workmates"
         tools:layout="@layout/fragment_workmates"
         android:id="@+id/nav_workmates"/>
