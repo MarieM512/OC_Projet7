@@ -16,4 +16,11 @@
     <string name="twitter_api_secret">f8cD2YO8oyAIS8swLYWrUZlJ7addUzs9bNgj7Zh2QZtyUO3ssl</string>
     <string name="twitter_client">NnJJTnU0VHdkZ0RCM1gxYTRSUUM6MTpjaQ</string>
     <string name="twitter_client_secret">9vuEIF6ydAmdQErEBOl3uwOybJBotaqH_76_A5dDE_G5GXLxMS</string>
+
+    <!-- Navigation -->
+    <string name="map_view">Map View</string>
+    <string name="list_view">List View</string>
+    <string name="workmates">Workmates</string>
+    <string name="toolbar_title_view">I\'m Hungry!</string>
+    <string name="toolbar_title_workmates">Available workmates</string>
 </resources>

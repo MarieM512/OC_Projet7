@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav"
+    app:startDestination="@id/nav_map">
+
+    <fragment android:name="com.example.projet7.MapViewFragment"
+        android:label="@string/toolbar_title_view"
+        tools:layout="@layout/fragment_map_view"
+        android:id="@+id/nav_map">
+        <action
+            android:id="@+id/action_nav_map_to_nav_detail"
+            app:destination="@id/nav_detail" />
+    </fragment>
+
+    <fragment android:name="com.example.projet7.ListViewFragment"
+        android:label="@string/toolbar_title_view"
+        tools:layout="@layout/fragment_list_view"
+        android:id="@+id/nav_list">
+        <action
+            android:id="@+id/action_nav_list_to_nav_detail"
+            app:destination="@id/nav_detail" />
+    </fragment>
+
+    <fragment android:name="com.example.projet7.WorkmatesFragment"
+        android:label="@string/toolbar_title_workmates"
+        tools:layout="@layout/fragment_workmates"
+        android:id="@+id/nav_workmates"/>
+
+    <fragment android:name="com.example.projet7.RestaurantDetailFragment"
+        android:label="@string/toolbar_title_workmates"
+        tools:layout="@layout/fragment_restaurant_detail"
+        android:id="@+id/nav_detail"/>
+
+</navigation>
