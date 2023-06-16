@@ -19,7 +19,7 @@ import com.example.projet7.databinding.ActivityHomeBinding;
 public class HomeActivity extends AppCompatActivity {
 
     private ActivityHomeBinding binding;
-    String permission = Manifest.permission.ACCESS_FINE_LOCATION;
+
     private NavController navController;
 
     @Override
@@ -28,7 +28,14 @@ public class HomeActivity extends AppCompatActivity {
         binding = ActivityHomeBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         setContentView(view);
-        permissionLauncher.launch(permission);
+
+        navController = Navigation.findNavController(HomeActivity.this, R.id.nav_host_fragment);
+        setSupportActionBar(binding.toolbar);
+        NavigationUI.setupWithNavController(binding.navigationBar, navController);
+        NavigationUI.setupWithNavController(binding.toolbar, navController);
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_map, R.id.nav_list, R.id.nav_workmates).build();
+        NavigationUI.setupActionBarWithNavController(HomeActivity.this, navController, appBarConfiguration);
+
 
 
 
@@ -43,23 +50,4 @@ public class HomeActivity extends AppCompatActivity {
 //                    });
 //        });
     }
-
-    private ActivityResultLauncher<String> permissionLauncher = registerForActivityResult(
-            new ActivityResultContracts.RequestPermission(),
-            new ActivityResultCallback<Boolean>() {
-                @Override
-                public void onActivityResult(Boolean isGranted) {
-                    if (isGranted) {
-                        navController = Navigation.findNavController(HomeActivity.this, R.id.nav_host_fragment);
-                        setSupportActionBar(binding.toolbar);
-                        NavigationUI.setupWithNavController(binding.navigationBar, navController);
-                        NavigationUI.setupWithNavController(binding.toolbar, navController);
-                        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_map, R.id.nav_list, R.id.nav_workmates).build();
-                        NavigationUI.setupActionBarWithNavController(HomeActivity.this, navController, appBarConfiguration);
-                    } else {
-                        Log.d("Permission", "permission denied");
-                    }
-                }
-            }
-    );
 }

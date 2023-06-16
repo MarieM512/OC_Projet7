@@ -15,7 +15,7 @@ public class RestaurantRepository {
     OkhttpService mOkhttpService = OkhttpService.getInstance();
     private static volatile RestaurantRepository INSTANCE = null;
 
-    ResponseResult mResponseResult = gson.fromJson(mOkhttpService.getResponseApi(), ResponseResult.class);
+    public ResponseResult mResponseResult = gson.fromJson(mOkhttpService.getResponseApi(), ResponseResult.class);
 
     public static RestaurantRepository getInstance() {
         if(INSTANCE == null) {

@@ -23,4 +23,5 @@
     <string name="workmates">Workmates</string>
     <string name="toolbar_title_view">I\'m Hungry!</string>
     <string name="toolbar_title_workmates">Available workmates</string>
+    <string name="message_location_permission">Please go to your parameter for granted location permission</string>
 </resources>

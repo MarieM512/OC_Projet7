@@ -59,7 +59,7 @@ public class OkhttpService implements ApiInterface {
                 client.newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {
-                        Log.d("API", "Failed to get a response from the request");
+                        Log.d("API", "Failed to get a response from the request" + e.toString());
                     }
 
                     @Override
@@ -93,7 +93,7 @@ public class OkhttpService implements ApiInterface {
                     @Override
                     public void onResponse(Response response) throws IOException {
                         jsonImage = response.body().string();
-                        if (jsonImage.startsWith("[")){
+                        if (jsonImage.startsWith("[{")){
                             PlaceResult[] mPlaceResult = gson.fromJson(jsonImage, PlaceResult[].class);
                             String urlRV = mPlaceResult[0].getPrefix() + "64x64" + mPlaceResult[0].getSuffix();
                             String urlDetail = mPlaceResult[0].getPrefix() + "410x300" + mPlaceResult[0].getSuffix();
