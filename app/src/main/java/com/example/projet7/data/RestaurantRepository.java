@@ -48,6 +48,10 @@ public class RestaurantRepository {
         return mResponseResult.getRestaurants().get(position).getDistance() + "m";
     }
 
+    public String getId(int position) {
+        return mResponseResult.getRestaurants().get(position).getFsq_id();
+    }
+
     public String getImgRV(String name) {
         String url = mOkhttpService.getUrlImgRV(name);
         if (Objects.equals(url, "invalid")) {

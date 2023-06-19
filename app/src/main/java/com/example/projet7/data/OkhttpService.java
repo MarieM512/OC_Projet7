@@ -172,6 +172,7 @@ public class OkhttpService implements ApiInterface {
                                 Integer position = Integer.parseInt(positionString);
                                 NavController navController = Navigation.findNavController(mActivity, R.id.nav_host_fragment);
                                 Bundle bundle = new Bundle();
+                                bundle.putString("id", mRestaurantRepository.getId(position));
                                 bundle.putString("name", mRestaurantRepository.getName(position));
                                 bundle.putString("type", mRestaurantRepository.getType(position));
                                 bundle.putString("address", mRestaurantRepository.getAddress(position));
