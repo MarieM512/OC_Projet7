@@ -7,18 +7,28 @@ public class User {
 
     String photo;
     String name;
+    String idChoice;
     String nameChoice;
     String typeChoice;
     String favorite;
 
     public User(){}
 
-    public User(String photo, String name, String nameChoice, String typeChoice, String favorite) {
+    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice, String favorite) {
         this.photo = photo;
         this.name = name;
+        this.idChoice = idChoice;
         this.nameChoice = nameChoice;
         this.typeChoice = typeChoice;
         this.favorite = favorite;
+    }
+
+    public String getIdChoice() {
+        return idChoice;
+    }
+
+    public void setIdChoice(String idChoice) {
+        this.idChoice = idChoice;
     }
 
     public String getPhoto() {

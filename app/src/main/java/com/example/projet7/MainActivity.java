@@ -83,7 +83,9 @@ public class MainActivity extends AppCompatActivity {
                             Map<String, Object> data = new HashMap<>();
                             data.put("name", user.getDisplayName());
                             data.put("photo", user.getPhotoUrl());
-                            data.put("choice", "");
+                            data.put("idChoice", "");
+                            data.put("nameChoice", "");
+                            data.put("typeChoice", "");
                             data.put("favorite", "");
                             mFirebaseFirestore.collection("users").document(user.getEmail()).set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
