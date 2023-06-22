@@ -1,6 +1,7 @@
 package com.example.projet7.ui.detail;
 
 import android.annotation.SuppressLint;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +28,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -81,6 +83,7 @@ public class RestaurantDetailFragment extends Fragment {
             }
         });
 
+        favorite(true);
         binding.name.setText(restaurantName);
         binding.type.setText(restaurantType);
         binding.address.setText(getArguments().getString("address"));
@@ -130,9 +133,56 @@ public class RestaurantDetailFragment extends Fragment {
             }
         });
 
+        binding.like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                favorite(false);
+            }
+        });
+
         EventChangeListener();
 
         return view;
+    }
+
+    private void favorite(Boolean choice) {
+        mFirebaseFirestore.collection("users").whereArrayContains("favorite", restaurantId).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isComplete()) {
+                            if (!task.getResult().isEmpty()) {
+                                for (int i=0; i<task.getResult().size(); i++) {
+                                    if (task.getResult().getDocuments().get(i).getId().equals(user.getEmail())) {
+                                        if (choice) {
+                                            binding.favoriteSymbol.setVisibility(View.VISIBLE);
+                                        } else {
+                                            mFirebaseFirestore.collection("users").document(user.getEmail()).update("favorite", FieldValue.arrayRemove(restaurantId))
+                                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                        @Override
+                                                        public void onComplete(@NonNull Task<Void> task) {
+                                                            binding.favoriteSymbol.setVisibility(View.GONE);
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (choice) {
+                                    binding.favoriteSymbol.setVisibility(View.GONE);
+                                } else {
+                                    mFirebaseFirestore.collection("users").document(user.getEmail()).update("favorite", FieldValue.arrayUnion(restaurantId))
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    binding.favoriteSymbol.setVisibility(View.VISIBLE);
+                                                }
+                                            });
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
     private void EventChangeListener() {

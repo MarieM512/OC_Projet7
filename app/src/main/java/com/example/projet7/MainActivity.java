@@ -25,6 +25,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
                             data.put("idChoice", "");
                             data.put("nameChoice", "");
                             data.put("typeChoice", "");
-                            data.put("favorite", "");
+                            data.put("favorite", Arrays.asList());
                             mFirebaseFirestore.collection("users").document(user.getEmail()).set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {

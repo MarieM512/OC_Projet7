@@ -1,7 +1,6 @@
 package com.example.projet7.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 public class User {
 
@@ -10,11 +9,11 @@ public class User {
     String idChoice;
     String nameChoice;
     String typeChoice;
-    String favorite;
+    List<String> favorite;
 
     public User(){}
 
-    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice, String favorite) {
+    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice, List<String> favorite) {
         this.photo = photo;
         this.name = name;
         this.idChoice = idChoice;
@@ -63,11 +62,11 @@ public class User {
         this.typeChoice = typeChoice;
     }
 
-    public String getFavorite() {
+    public List<String> getFavorite() {
         return favorite;
     }
 
-    public void setFavorite(String favorite) {
+    public void setFavorite(List<String> favorite) {
         this.favorite = favorite;
     }
 }
