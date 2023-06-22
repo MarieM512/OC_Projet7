@@ -8,18 +8,23 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.projet7.data.RestaurantRepository;
+import com.example.projet7.databinding.FragmentListViewBinding;
+import com.example.projet7.databinding.FragmentMapViewBinding;
 import com.example.projet7.model.Restaurant;
 
+import java.io.IOException;
 import java.util.List;
 
 public class ListViewFragment extends Fragment implements RecyclerViewInterface {
 
     private RestaurantRepository mRestaurantRepository = RestaurantRepository.getInstance();
+    private FragmentListViewBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,14 +34,19 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list_view, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rvRestaurant);
+        binding = FragmentListViewBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
 
-        List<Restaurant> restaurants = mRestaurantRepository.getRestaurants();
-
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(new RestaurantAdapter(getActivity().getApplicationContext(), restaurants, this));
+        if (mRestaurantRepository.mResponseResult == null) {
+            binding.tvEmpty.setVisibility(View.VISIBLE);
+            binding.rvRestaurant.setVisibility(View.GONE);
+        } else {
+            List<Restaurant> restaurants = mRestaurantRepository.getRestaurants();
+            binding.tvEmpty.setVisibility(View.GONE);
+            binding.rvRestaurant.setVisibility(View.VISIBLE);
+            binding.rvRestaurant.setLayoutManager(new LinearLayoutManager(requireContext()));
+            binding.rvRestaurant.setAdapter(new RestaurantAdapter(getActivity().getApplicationContext(), restaurants, this));
+        }
         return view;
     }
 
@@ -44,6 +54,7 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
     public void onItemClick(int position) {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         Bundle bundle = new Bundle();
+        bundle.putString("id", mRestaurantRepository.getId(position));
         bundle.putString("name", mRestaurantRepository.getName(position));
         bundle.putString("type", mRestaurantRepository.getType(position));
         bundle.putString("address", mRestaurantRepository.getAddress(position));

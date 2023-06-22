@@ -6,6 +6,7 @@
     <color name="colorPrimaryDark">#FF5C01</color>
     <color name="colorAccent">#FFFFFFFF</color>
     <color name="yellow">#FFFF00</color>
+    <color name="grey">#C0C0C0</color>
 
     <!-- Login Connection -->
     <color name="facebook">#3B5998</color>
