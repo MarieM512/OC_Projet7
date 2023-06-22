@@ -148,8 +148,9 @@ public class RestaurantDetailFragment extends Fragment {
                         for (DocumentChange dc : value.getDocumentChanges()) {
                             switch (dc.getType()) {
                                 case ADDED:
-                                    mUserArrayList.add(dc.getDocument().toObject(User.class));
-                                    break;
+                                    if (!dc.getDocument().getId().equals(user.getEmail())) {
+                                        mUserArrayList.add(dc.getDocument().toObject(User.class));
+                                    }
                                 case REMOVED:
                                     mUserArrayList.remove(dc.getDocument().toObject(User.class));
                             }
