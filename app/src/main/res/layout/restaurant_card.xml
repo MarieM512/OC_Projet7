@@ -59,14 +59,14 @@
             android:layout_height="wrap_content"
             tools:text="100m" />
 
-
         <TextView
             android:id="@+id/reservedCard"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end|center"
             tools:text="(2)"
-            app:drawableLeftCompat="@drawable/ic_person" />
+            android:drawableStart="@drawable/ic_person" />
 
     </LinearLayout>
 
