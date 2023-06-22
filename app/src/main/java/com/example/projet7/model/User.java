@@ -13,13 +13,12 @@ public class User {
 
     public User(){}
 
-    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice, List<String> favorite) {
+    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice) {
         this.photo = photo;
         this.name = name;
         this.idChoice = idChoice;
         this.nameChoice = nameChoice;
         this.typeChoice = typeChoice;
-        this.favorite = favorite;
     }
 
     public String getIdChoice() {
