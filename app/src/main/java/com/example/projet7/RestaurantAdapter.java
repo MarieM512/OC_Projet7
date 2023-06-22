@@ -54,14 +54,16 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             if (!task.getResult().isEmpty()) {
-                                holder.reserved.setVisibility(View.VISIBLE);
                                 int size = task.getResult().size();
                                 for (int i = 0; i<task.getResult().size(); i++) {
                                     if (task.getResult().getDocuments().get(i).getId().equals(mFirebaseAuth.getCurrentUser().getEmail())) {
                                         size -= 1;
                                     }
                                 }
-                                holder.reserved.setText("(" + size + ")");
+                                if (size > 0) {
+                                    holder.reserved.setVisibility(View.VISIBLE);
+                                    holder.reserved.setText("(" + size + ")");
+                                }
                             }
                         } else {
                             Log.d("TAG", "onComplete: ", task.getException());
