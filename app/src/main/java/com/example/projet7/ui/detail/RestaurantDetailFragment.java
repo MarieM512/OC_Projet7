@@ -220,13 +220,13 @@ public class RestaurantDetailFragment extends Fragment {
 
     @Override
     public void onResume() {
-        ((HomeActivity) getActivity()).getSupportActionBar().hide();
+        ((HomeActivity) getActivity()).findViewById(R.id.toolbar).setVisibility(View.GONE);
         super.onResume();
     }
 
     @Override
     public void onStop() {
-        ((HomeActivity) getActivity()).getSupportActionBar().show();
+        ((HomeActivity) getActivity()).findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
         super.onStop();
     }
 }
