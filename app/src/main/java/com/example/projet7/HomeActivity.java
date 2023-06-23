@@ -11,15 +11,23 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.projet7.databinding.ActivityHomeBinding;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
+import org.w3c.dom.Text;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActivityHomeBinding binding;
+    private FirebaseAuth mFirebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +43,21 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         NavigationUI.setupWithNavController(binding.navView, navController);
         binding.navView.setNavigationItemSelectedListener(this);
+
+        View headView = binding.navView.getHeaderView(0);
+        ImageView image = headView.findViewById(R.id.image_nav);
+        TextView name = headView.findViewById(R.id.tv_name_nav);
+        TextView email = headView.findViewById(R.id.tv_email_nav);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+
+        if (user.getPhotoUrl() == null) {
+            image.setImageResource(R.drawable.ic_workmates);
+        } else {
+            Glide.with(this).load(user.getPhotoUrl()).centerCrop().into(image);
+        }
+        name.setText(user.getDisplayName());
+        email.setText(user.getEmail());
     }
 
     @Override
