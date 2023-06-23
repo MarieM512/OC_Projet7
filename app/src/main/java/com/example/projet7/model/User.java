@@ -9,16 +9,20 @@ public class User {
     String idChoice;
     String nameChoice;
     String typeChoice;
+    String addressChoice;
+    String imageChoice;
     List<String> favorite;
 
     public User(){}
 
-    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice) {
+    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice, String addressChoice, String imageChoice) {
         this.photo = photo;
         this.name = name;
         this.idChoice = idChoice;
         this.nameChoice = nameChoice;
         this.typeChoice = typeChoice;
+        this.addressChoice = addressChoice;
+        this.imageChoice = imageChoice;
     }
 
     public String getIdChoice() {
@@ -59,6 +63,22 @@ public class User {
 
     public void setTypeChoice(String typeChoice) {
         this.typeChoice = typeChoice;
+    }
+
+    public String getAddressChoice() {
+        return addressChoice;
+    }
+
+    public void setAddressChoice(String addressChoice) {
+        this.addressChoice = addressChoice;
+    }
+
+    public String getImageChoice() {
+        return imageChoice;
+    }
+
+    public void setImageChoice(String imageChoice) {
+        this.imageChoice = imageChoice;
     }
 
     public List<String> getFavorite() {

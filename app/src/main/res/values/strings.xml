@@ -33,4 +33,7 @@
     <!-- Drawer -->
     <string name="nav_open">Open</string>
     <string name="nav_close">Close</string>
+
+    <!-- Toast -->
+    <string name="message_no_lunch_selected">You didn\'t choose where to eat</string>
 </resources>

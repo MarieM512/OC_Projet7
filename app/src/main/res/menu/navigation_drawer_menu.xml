@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/nav_launch"
+        android:id="@+id/nav_lunch"
         android:icon="@drawable/ic_restaurant"
         android:title="@string/your_lunch"/>
 
