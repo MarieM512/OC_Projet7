@@ -5,6 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="colorOnSecondaryContainer">@color/colorPrimary</item>
         <item name="colorOnSurface">@color/colorPrimary</item>
+        <item name="navigationViewStyle">@style/Widget.App.NavigationView</item>
     </style>
 
     <style name="Theme.Projet7" parent="Base.Theme.Projet7" />
@@ -30,5 +31,16 @@
     <style name="circleImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
+    </style>
+
+
+    <!-- Navigation View -->
+    <style name="Widget.App.NavigationView" parent="Widget.Material3.NavigationView">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.NavigationView</item>
+    </style>
+
+    <style name="ThemeOverlay.App.NavigationView" parent="">
+        <item name="colorSurface">@color/colorPrimary</item>
+        <item name="colorOnSurfaceVariant">@color/white</item>
     </style>
 </resources>
