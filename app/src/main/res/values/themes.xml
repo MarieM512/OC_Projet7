@@ -6,6 +6,7 @@
         <item name="colorOnSecondaryContainer">@color/colorPrimary</item>
         <item name="colorOnSurface">@color/colorPrimary</item>
         <item name="navigationViewStyle">@style/Widget.App.NavigationView</item>
+        <item name="materialSwitchStyle">@style/Widget.App.Switch</item>
     </style>
 
     <style name="Theme.Projet7" parent="Base.Theme.Projet7" />
@@ -42,5 +43,14 @@
     <style name="ThemeOverlay.App.NavigationView" parent="">
         <item name="colorSurface">@color/colorPrimary</item>
         <item name="colorOnSurfaceVariant">@color/white</item>
+    </style>
+
+    <!-- Switch -->
+    <style name="Widget.App.Switch" parent="Widget.Material3.CompoundButton.MaterialSwitch">
+        <item name="materialThemeOverlay">@style/ThemeOverlay.App.Switch</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Switch" parent="">
+        <item name="colorPrimary">@color/colorPrimary</item>
     </style>
 </resources>

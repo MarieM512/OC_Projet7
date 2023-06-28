@@ -22,6 +22,7 @@
     <string name="map_view">Map View</string>
     <string name="list_view">List View</string>
     <string name="workmates">Workmates</string>
+    <string name="toolbar_title_parameter">Settings</string>
     <string name="toolbar_title_view">I\'m Hungry!</string>
     <string name="toolbar_title_workmates">Available workmates</string>
     <string name="message_location_permission">Please go to your parameter for granted location permission.</string>
@@ -29,6 +30,8 @@
     <string name="your_lunch">YOUR LUNCH</string>
     <string name="settings">SETTINGS</string>
     <string name="logout">LOGOUT</string>
+    <string name="parameter_notifications">Notifications</string>
+    <string name="parameter_notifications_message">Permit to send you a notifications at 12 PM to inform you which restaurant you have chosen with his address and the list of your colleges who will join you.</string>
 
     <!-- Drawer -->
     <string name="nav_open">Open</string>

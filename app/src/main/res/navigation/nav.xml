@@ -32,5 +32,10 @@
         android:label="@string/toolbar_title_workmates"
         tools:layout="@layout/fragment_restaurant_detail"
         android:id="@+id/nav_detail"/>
+    <fragment
+        android:id="@+id/nav_parameter"
+        android:name="com.example.projet7.ui.parameter.ParameterFragment"
+        android:label="@string/toolbar_title_parameter"
+        tools:layout="@layout/fragment_parameter" />
 
 </navigation>

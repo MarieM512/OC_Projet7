@@ -8,6 +8,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -22,6 +23,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -96,7 +98,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 }
             });
         } else if (item.getItemId() == R.id.nav_settings) {
-            Log.d("item", "onNavigationItemSelected: Nav settings");
+            mNavController.navigate(R.id.nav_parameter);
+            binding.drawer.closeDrawer(GravityCompat.START);
         } else if (item.getItemId() == R.id.nav_logout) {
             AuthUI.getInstance().signOut(this)
                     .addOnCompleteListener(task -> {

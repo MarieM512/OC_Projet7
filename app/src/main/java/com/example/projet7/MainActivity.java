@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
                             data.put("addressChoice", "");
                             data.put("imageChoice", "");
                             data.put("favorite", Arrays.asList());
+                            data.put("notification", false);
                             mFirebaseFirestore.collection("users").document(user.getEmail()).set(data).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
