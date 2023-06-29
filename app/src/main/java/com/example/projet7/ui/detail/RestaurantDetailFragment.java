@@ -48,6 +48,8 @@ public class RestaurantDetailFragment extends Fragment {
     String restaurantId;
     String restaurantName;
     String restaurantType;
+    String restaurantAddress;
+    String restaurantImage;
     FirebaseAuth mFirebaseAuth;
     CollectionReference users;
     FirebaseUser user;
@@ -72,6 +74,8 @@ public class RestaurantDetailFragment extends Fragment {
         restaurantId = getArguments().getString("id");
         restaurantName = getArguments().getString("name");
         restaurantType = getArguments().getString("type");
+        restaurantAddress = getArguments().getString("address");
+        restaurantImage = getArguments().getString("image");
         users.document(user.getEmail()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -86,8 +90,8 @@ public class RestaurantDetailFragment extends Fragment {
         favorite(true);
         binding.name.setText(restaurantName);
         binding.type.setText(restaurantType);
-        binding.address.setText(getArguments().getString("address"));
-        Glide.with(requireContext()).load(getArguments().getString("image")).centerCrop().into(binding.image);
+        binding.address.setText(restaurantAddress);
+        Glide.with(requireContext()).load(restaurantImage).centerCrop().into(binding.image);
         binding.rvDetailWorkmates.setLayoutManager(new LinearLayoutManager(requireContext()));
         mAdapter = new DetailAdapter(requireContext(), mUserArrayList);
         binding.rvDetailWorkmates.setAdapter(mAdapter);
@@ -104,7 +108,9 @@ public class RestaurantDetailFragment extends Fragment {
                                 mFirebaseFirestore.collection("users").document(user.getEmail()).update(
                                         "idChoice", "",
                                         "nameChoice", "",
-                                        "typeChoice", ""
+                                        "typeChoice", "",
+                                        "addressChoice", "",
+                                        "imageChoice", ""
                                 ).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -116,7 +122,9 @@ public class RestaurantDetailFragment extends Fragment {
                                 mFirebaseFirestore.collection("users").document(user.getEmail()).update(
                                         "idChoice", restaurantId,
                                         "nameChoice", restaurantName,
-                                        "typeChoice", restaurantType
+                                        "typeChoice", restaurantType,
+                                        "addressChoice", restaurantAddress,
+                                        "imageChoice", restaurantImage
                                 ).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
@@ -220,13 +228,13 @@ public class RestaurantDetailFragment extends Fragment {
 
     @Override
     public void onResume() {
-        ((HomeActivity) getActivity()).getSupportActionBar().hide();
+        ((HomeActivity) getActivity()).findViewById(R.id.toolbar).setVisibility(View.GONE);
         super.onResume();
     }
 
     @Override
     public void onStop() {
-        ((HomeActivity) getActivity()).getSupportActionBar().show();
+        ((HomeActivity) getActivity()).findViewById(R.id.toolbar).setVisibility(View.VISIBLE);
         super.onStop();
     }
 }
