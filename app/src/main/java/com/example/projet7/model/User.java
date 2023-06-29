@@ -11,11 +11,12 @@ public class User {
     String typeChoice;
     String addressChoice;
     String imageChoice;
+    Boolean notification;
     List<String> favorite;
 
     public User(){}
 
-    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice, String addressChoice, String imageChoice) {
+    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice, String addressChoice, String imageChoice, Boolean notification) {
         this.photo = photo;
         this.name = name;
         this.idChoice = idChoice;
@@ -23,6 +24,7 @@ public class User {
         this.typeChoice = typeChoice;
         this.addressChoice = addressChoice;
         this.imageChoice = imageChoice;
+        this.notification = notification;
     }
 
     public String getIdChoice() {
@@ -79,6 +81,14 @@ public class User {
 
     public void setImageChoice(String imageChoice) {
         this.imageChoice = imageChoice;
+    }
+
+    public Boolean getNotification() {
+        return notification;
+    }
+
+    public void setNotification(Boolean notification) {
+        this.notification = notification;
     }
 
     public List<String> getFavorite() {

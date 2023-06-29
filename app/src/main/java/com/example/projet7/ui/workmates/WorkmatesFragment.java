@@ -52,7 +52,7 @@ public class WorkmatesFragment extends Fragment {
     }
 
     private void EventChangeListener() {
-        mFirebaseFirestore.collection("users").orderBy("name", Query.Direction.ASCENDING)
+        mFirebaseFirestore.collection("users").orderBy("idChoice", Query.Direction.DESCENDING)
                 .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -65,6 +65,9 @@ public class WorkmatesFragment extends Fragment {
                             if (!dc.getDocument().getId().equals(userEmail)) {
                                 if (dc.getType() == DocumentChange.Type.ADDED) {
                                     mUserArrayList.add(dc.getDocument().toObject(User.class));
+                                }
+                                if (dc.getType() == DocumentChange.Type.MODIFIED) {
+                                    mUserArrayList.set(dc.getOldIndex(), dc.getDocument().toObject(User.class));
                                 }
                             }
                             mAdapter.notifyDataSetChanged();
