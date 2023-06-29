@@ -1,4 +1,4 @@
-package com.example.projet7;
+package com.example.projet7.ui.restaurant;
 
 public class RestaurantData {
     private String name;

@@ -1,4 +1,4 @@
-package com.example.projet7;
+package com.example.projet7.ui.restaurant;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.projet7.R;
 import com.example.projet7.data.RestaurantRepository;
 import com.example.projet7.model.Restaurant;
 import com.google.android.gms.tasks.OnCompleteListener;

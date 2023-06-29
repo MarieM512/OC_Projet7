@@ -6,19 +6,17 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.projet7.data.RestaurantRepository;
 import com.example.projet7.databinding.FragmentListViewBinding;
-import com.example.projet7.databinding.FragmentMapViewBinding;
 import com.example.projet7.model.Restaurant;
+import com.example.projet7.ui.restaurant.RecyclerViewInterface;
+import com.example.projet7.ui.restaurant.RestaurantAdapter;
 
-import java.io.IOException;
 import java.util.List;
 
 public class ListViewFragment extends Fragment implements RecyclerViewInterface {

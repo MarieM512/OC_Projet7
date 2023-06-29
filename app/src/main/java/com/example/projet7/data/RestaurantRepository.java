@@ -29,6 +29,7 @@ public class RestaurantRepository {
     }
 
     public List<Restaurant> getRestaurants() {
+        mResponseResult = gson.fromJson(mOkhttpService.getResponseApi(), ResponseResult.class);
         return mResponseResult.getRestaurants();
     }
 
