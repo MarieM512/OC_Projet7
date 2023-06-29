@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Go 4 Lunch</string>
+    <string name="login_facebook">Se connecter avec Facebook</string>
+    <string name="login_google">Se connecter avec Google</string>
+    <string name="login_mail">Se connecter avec par mail</string>
+    <string name="login_Twitter">Se connecter avec Twitter</string>
+    <string name="map_view">Vue cartographique</string>
+    <string name="list_view">Vue liste</string>
+    <string name="workmates">Collègues</string>
+    <string name="toolbar_title_parameter">Paramètres</string>
+    <string name="toolbar_title_view">J\'ai faim!</string>
+    <string name="toolbar_title_workmates">Collègues disponible</string>
+    <string name="message_location_permission">Veuillez accéder à votre paramètre pour obtenir la permission de localisation.</string>
+    <string name="message_nobody">On dirait que personne ne mangera ici.</string>
+    <string name="your_lunch">Votre déjeuner</string>
+    <string name="settings">Paramètres</string>
+    <string name="logout">Déconnexion</string>
+    <string name="parameter_notifications">Notifications</string>
+    <string name="parameter_notifications_message">Permettez de vous envoyer une notification à midi pour vous informer quel restaurant vous avez choisi avec son adresse et la liste de vos collèges qui se joindront à vous.</string>
+    <string name="message_no_lunch_selected">Tu n\'as pas choisi où manger</string>
+</resources>
