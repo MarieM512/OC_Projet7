@@ -1,9 +1,12 @@
 package com.example.projet7;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
@@ -70,6 +73,27 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         }
         name.setText(user.getDisplayName());
         email.setText(user.getEmail());
+
+        binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (item.getItemId() == R.id.research) {
+                    Toast.makeText(HomeActivity.this, "click research", Toast.LENGTH_SHORT).show();
+                }
+                return true;
+            }
+        });
+
+        mNavController.addOnDestinationChangedListener(new NavController.OnDestinationChangedListener() {
+            @Override
+            public void onDestinationChanged(@NonNull NavController navController, @NonNull NavDestination navDestination, @Nullable Bundle bundle) {
+                if (navDestination.getLabel() == getString(R.string.toolbar_title_workmates)) {
+                    binding.toolbar.getMenu().findItem(R.id.research).setVisible(false);
+                } else {
+                    binding.toolbar.getMenu().findItem(R.id.research).setVisible(true);
+                }
+            }
+        });
     }
 
     @Override
