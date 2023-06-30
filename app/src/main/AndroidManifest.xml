@@ -19,7 +19,7 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_application_id"/>
         <meta-data android:name="com.facebook.sdk.ClientToken" android:value="@string/facebook_client_token"/>
         <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBOo_rlXsu72U4m0NGC_WiBz0iL6Wzg8tI"/>
+            android:value="${googleMapsApiKey}"/>
         <activity
             android:name=".HomeActivity"
             android:exported="true" />
