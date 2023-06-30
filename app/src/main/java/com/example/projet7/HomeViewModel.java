@@ -41,7 +41,7 @@ public class HomeViewModel extends ViewModel {
     void getCurrentLocation(Context context, GoogleMap map) {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000)
+            mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
                     .setWaitForAccurateLocation(false)
                     .setMinUpdateDistanceMeters(10)
                     .build();
