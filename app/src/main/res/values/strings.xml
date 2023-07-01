@@ -39,4 +39,11 @@
 
     <!-- Toast -->
     <string name="message_no_lunch_selected">You didn\'t choose where to eat</string>
+
+    <!-- Notification -->
+    <string name="notif_title">It\'s time to go eat at</string>
+    <string name="notif_body_start">Go to</string>
+    <string name="notif_body_middle">to join</string>
+    <string name="channel_name" translatable="false">Head</string>
+    <string name="channel_description" translatable="false">Info</string>
 </resources>

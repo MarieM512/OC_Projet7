@@ -19,4 +19,7 @@
     <string name="parameter_notifications">Notifications</string>
     <string name="parameter_notifications_message">Permettez de vous envoyer une notification à midi pour vous informer quel restaurant vous avez choisi avec son adresse et la liste de vos collèges qui se joindront à vous.</string>
     <string name="message_no_lunch_selected">Tu n\'as pas choisi où manger</string>
+    <string name="notif_title">Il est l\'heure d\'aller manger chez</string>
+    <string name="notif_body_start">Aller à</string>
+    <string name="notif_body_middle">pour rejoindre</string>
 </resources>

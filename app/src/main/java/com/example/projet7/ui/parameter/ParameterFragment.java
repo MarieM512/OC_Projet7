@@ -10,15 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.Toast;
 
-import com.example.projet7.R;
 import com.example.projet7.databinding.FragmentParameterBinding;
-import com.example.projet7.databinding.FragmentWorkmatesBinding;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class ParameterFragment extends Fragment {
@@ -41,6 +39,17 @@ public class ParameterFragment extends Fragment {
 
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         user = FirebaseAuth.getInstance().getCurrentUser();
+
+        mFirebaseFirestore.collection("users").document(user.getEmail()).get()
+                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    Boolean notification = (Boolean) task.getResult().getData().get("notification");
+                                    binding.notificationSwitch.setChecked(notification);
+                                }
+                            }
+                        });
 
         binding.notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
