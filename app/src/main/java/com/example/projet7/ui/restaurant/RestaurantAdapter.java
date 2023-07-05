@@ -8,12 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.projet7.R;
 import com.example.projet7.data.RestaurantRepository;
 import com.example.projet7.model.Restaurant;
+import com.example.projet7.ui.viewmodel.HomeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,29 +29,28 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
 
     Context mContext;
     List<Restaurant> mRestaurantList;
-    private RestaurantRepository mRestaurantRepository = RestaurantRepository.getInstance();
+    private HomeViewModel mHomeViewModel;
     private RecyclerViewInterface mRecyclerViewInterface;
     FirebaseFirestore mFirebaseFirestore;
-    FirebaseAuth mFirebaseAuth;
 
-    public RestaurantAdapter(Context context, List<Restaurant> restaurantList, RecyclerViewInterface recyclerViewInterface) {
+    public RestaurantAdapter(Context context, List<Restaurant> restaurantList, RecyclerViewInterface recyclerViewInterface, HomeViewModel viewModel) {
         mContext = context;
         mRestaurantList = restaurantList;
         mRecyclerViewInterface = recyclerViewInterface;
+        mHomeViewModel = viewModel;
     }
 
     @NonNull
     @Override
     public RestaurantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         mFirebaseFirestore = FirebaseFirestore.getInstance();
-        mFirebaseAuth = FirebaseAuth.getInstance();
         return new RestaurantViewHolder(LayoutInflater.from(mContext).inflate(R.layout.restaurant_card, parent, false));
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        mFirebaseFirestore.collection("users").whereEqualTo("idChoice", mRestaurantRepository.getId(position)).get()
+        mFirebaseFirestore.collection("users").whereEqualTo("idChoice", mHomeViewModel.getId(position)).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -57,7 +58,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
                             if (!task.getResult().isEmpty()) {
                                 int size = task.getResult().size();
                                 for (int i = 0; i<task.getResult().size(); i++) {
-                                    if (task.getResult().getDocuments().get(i).getId().equals(mFirebaseAuth.getCurrentUser().getEmail())) {
+                                    if (task.getResult().getDocuments().get(i).getId().equals(mHomeViewModel.getEmailUser())) {
                                         size -= 1;
                                     }
                                 }
@@ -72,11 +73,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
                     }
                 });
 
-        holder.name.setText(mRestaurantRepository.getName(position));
-        holder.detail.setText(mRestaurantRepository.getType(position));
-        holder.address.setText(mRestaurantRepository.getAddress(position));
-        Glide.with(mContext).load(mRestaurantRepository.getImgRV(mRestaurantRepository.getName(position))).centerCrop().into(holder.image);
-        holder.distance.setText(mRestaurantRepository.getDistance(position));
+        holder.name.setText(mHomeViewModel.getName(position));
+        holder.detail.setText(mHomeViewModel.getType(position));
+        holder.address.setText(mHomeViewModel.getAddress(position));
+        Glide.with(mContext).load(mHomeViewModel.getImgRV(position)).centerCrop().into(holder.image);
+        holder.distance.setText(mHomeViewModel.getDistance(position));
         holder.itemView.setOnClickListener(v -> {
             mRecyclerViewInterface.onItemClick(position);
         });

@@ -10,47 +10,24 @@ import java.util.Objects;
 
 public class RestaurantRepository {
 
+    private final OkhttpService mOkhttpService;
     GsonBuilder builder = new GsonBuilder();
     Gson gson = builder.create();
-    OkhttpService mOkhttpService = OkhttpService.getInstance();
-    private static volatile RestaurantRepository INSTANCE = null;
 
-    public ResponseResult mResponseResult = gson.fromJson(mOkhttpService.getResponseApi(), ResponseResult.class);
+    public RestaurantRepository(OkhttpService okhttpService) {
+        this.mOkhttpService = okhttpService;
+    }
 
-    public static RestaurantRepository getInstance() {
-        if(INSTANCE == null) {
-            synchronized (OkhttpService.class) {
-                if (INSTANCE == null) {
-                    INSTANCE = new RestaurantRepository();
-                }
-            }
-        }
-        return INSTANCE;
+    public void setParameters(Double latitude, Double longitude, ApiService apiService) {
+        mOkhttpService.setParams(latitude, longitude, apiService);
     }
 
     public List<Restaurant> getRestaurants() {
-        mResponseResult = gson.fromJson(mOkhttpService.getResponseApi(), ResponseResult.class);
-        return mResponseResult.getRestaurants();
+        return gson.fromJson(mOkhttpService.getResponseApi(), ResponseResult.class).getRestaurants();
     }
 
-    public String getName(int position) {
-        return mResponseResult.getRestaurants().get(position).getName();
-    }
-
-    public String getType(int position) {
-        return mResponseResult.getRestaurants().get(position).getCategories().get(0).getName();
-    }
-
-    public String getAddress(int position) {
-        return mResponseResult.getRestaurants().get(position).getLocation().getAddress();
-    }
-
-    public String getDistance(int position) {
-        return mResponseResult.getRestaurants().get(position).getDistance() + "m";
-    }
-
-    public String getId(int position) {
-        return mResponseResult.getRestaurants().get(position).getFsq_id();
+    public void getImgPlace(String name, String id) {
+        mOkhttpService.getImgPlace(name, id);
     }
 
     public String getImgRV(String name) {

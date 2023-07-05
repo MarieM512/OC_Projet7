@@ -6,14 +6,20 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModel;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
-import com.example.projet7.data.OkhttpService;
+import com.example.projet7.R;
+import com.example.projet7.data.ApiService;
+import com.example.projet7.data.ImgService;
 import com.example.projet7.data.RestaurantRepository;
 import com.example.projet7.model.ResponseResult;
 import com.example.projet7.model.Restaurant;
@@ -26,6 +32,7 @@ import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,52 +40,48 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.io.Closeable;
+import java.util.List;
 
 public class HomeViewModel extends ViewModel {
 
     private final RestaurantRepository mRestaurantRepository;
-
-    private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
-
-    private LocationRequest mLocationRequest;
-    private LocationCallback mLocationCallback;
+    private final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
     private Double latitude = 0.00;
     private Double longitude = 0.00;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private OkhttpService mOkhttpService = OkhttpService.getInstance();
+    Handler mainHandler = new Handler(Looper.getMainLooper());
 
     public HomeViewModel(RestaurantRepository restaurantRepository) {
         this.mRestaurantRepository = restaurantRepository;
     }
 
-    public void getCurrentLocation(Context context, GoogleMap map) {
+    /* Google Maps */
+
+    public void getCurrentLocation(Context context, Activity activity, GoogleMap map) {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
+            LocationRequest locationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
                     .setWaitForAccurateLocation(false)
                     .setMinUpdateDistanceMeters(10)
                     .build();
-            mLocationCallback = new LocationCallback() {
+            LocationCallback locationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(@NonNull LocationResult locationResult) {
                     super.onLocationResult(locationResult);
                     if (locationResult.getLastLocation() == null) {
-                        Log.d("location", "Location not updated");
+                        Log.d("Google Maps", "Location not updated");
                     } else {
-                        Log.d("location", "Location updated");
+                        Log.d("Google Maps", "Location updated");
                         if (latitude == 0.00 && longitude == 0.00) {
                             latitude = locationResult.getLastLocation().getLatitude();
                             longitude = locationResult.getLastLocation().getLongitude();
-                            LatLng pos = new LatLng(latitude, longitude);
-                            map.moveCamera(CameraUpdateFactory.newLatLng(pos));
-                            map.setMinZoomPreference(15);
-                            mOkhttpService.setParams(latitude, longitude, map);
+                            focusCamera(map);
+                            setParam(latitude, longitude, activity, map);
                         }
                     }
                 }
             };
-            mFusedLocationProviderClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.getMainLooper());
+            mFusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
         }
     }
 
@@ -90,14 +93,76 @@ public class HomeViewModel extends ViewModel {
                         public void onSuccess(Location location) {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
-                            LatLng pos = new LatLng(latitude, longitude);
-                            map.moveCamera(CameraUpdateFactory.newLatLng(pos));
-                            map.setMinZoomPreference(15);
-                            mOkhttpService.setParams(latitude, longitude, map);
-                            Log.d("location", "Location updated");
+                            focusCamera(map);
+                            setParam(latitude, longitude, activity, map);
+                            Log.d("Google Maps", "Location updated");
                         }
                     });
         }
+    }
+
+    private void focusCamera(GoogleMap map) {
+        LatLng pos = new LatLng(latitude, longitude);
+        map.moveCamera(CameraUpdateFactory.newLatLng(pos));
+        map.setMinZoomPreference(15);
+    }
+
+    private void setParam(Double latitude, Double longitude, Activity activity, GoogleMap map) {
+        mRestaurantRepository.setParameters(latitude, longitude, new ApiService() {
+            @Override
+            public void getRestaurantMarker(String jsonRestaurant) {
+                mainHandler.post(new Runnable() {
+                    GsonBuilder builder = new GsonBuilder();
+                    Gson gson = builder.create();
+                    ResponseResult responseResult = gson.fromJson(jsonRestaurant, ResponseResult.class);
+                    Double latitude;
+                    Double longitude;
+                    String name;
+                    String id;
+                    @Override
+                    public void run() {
+                        if (!jsonRestaurant.isEmpty()) {
+                            for (Restaurant restaurant : responseResult.getRestaurants()) {
+                                latitude = restaurant.getGeocodes().getMain().getLatitude();
+                                longitude = restaurant.getGeocodes().getMain().getLongitude();
+                                name = restaurant.getName();
+                                id = restaurant.getFsq_id();
+                                addMarkers(map, activity, latitude, longitude, name);
+                                getImgPlace(name, id);
+                            }
+                        }
+
+                    }
+                });
+            }
+        });
+    }
+
+    private void addMarkers(GoogleMap map, Activity activity, Double latitude, Double longitude, String name) {
+        LatLng pos = new LatLng(latitude, longitude);
+        map.addMarker(new MarkerOptions()
+                .title(name)
+                .position(pos));
+        map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                String positionString = marker.getId().substring(1);
+                Integer position = Integer.parseInt(positionString);
+                NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
+                Bundle bundle = new Bundle();
+                bundle.putString("id", getId(position));
+                bundle.putString("name", getName(position));
+                bundle.putString("type", getType(position));
+                bundle.putString("address", getAddress(position));
+                bundle.putString("image", getImgDetail(position));
+                navController.navigate(R.id.action_nav_map_to_nav_detail, bundle);
+                return false;
+            }
+        });
+    }
+
+    private void getImgPlace(String name, String id) {
+        mRestaurantRepository.getImgPlace(name, id);
     }
 
     /* Firebase Auth */
@@ -112,5 +177,39 @@ public class HomeViewModel extends ViewModel {
 
     public Uri getImgUser() {
         return mUser.getPhotoUrl();
+    }
+
+    /* API */
+
+    public List<Restaurant> getRestaurants() {
+        return mRestaurantRepository.getRestaurants();
+    }
+
+    public String getName(int position) {
+        return mRestaurantRepository.getRestaurants().get(position).getName();
+    }
+
+    public String getType(int position) {
+        return mRestaurantRepository.getRestaurants().get(position).getCategories().get(0).getName();
+    }
+
+    public String getAddress(int position) {
+        return mRestaurantRepository.getRestaurants().get(position).getLocation().getAddress();
+    }
+
+    public String getDistance(int position) {
+        return mRestaurantRepository.getRestaurants().get(position).getDistance() + "m";
+    }
+
+    public String getId(int position) {
+        return mRestaurantRepository.getRestaurants().get(position).getFsq_id();
+    }
+
+    public String getImgDetail(int position) {
+        return mRestaurantRepository.getImgDetail(getName(position));
+    }
+
+    public String getImgRV(int position) {
+        return mRestaurantRepository.getImgRV(getName(position));
     }
 }
