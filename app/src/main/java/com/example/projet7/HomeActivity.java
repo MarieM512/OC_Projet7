@@ -49,10 +49,10 @@ import java.util.ArrayList;
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private ActivityHomeBinding binding;
-    private FirebaseAuth mFirebaseAuth;
-    private NavController mNavController;
+    private HomeViewModel viewModel;
     private NavHostFragment mNavHostFragment;
-    private FirebaseUser user;
+    private NavController mNavController;
+
     private FirebaseFirestore mFirebaseFirestore;
 
     @Override
@@ -75,19 +75,17 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ImageView image = headView.findViewById(R.id.image_nav);
         TextView name = headView.findViewById(R.id.tv_name_nav);
         TextView email = headView.findViewById(R.id.tv_email_nav);
-        mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseFirestore = FirebaseFirestore.getInstance();
-        user = mFirebaseAuth.getCurrentUser();
 
-        HomeViewModel viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(HomeViewModel.class);
+        viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(HomeViewModel.class);
 
-        if (user.getPhotoUrl() == null) {
+        if (viewModel.getImgUser() == null) {
             image.setImageResource(R.drawable.ic_workmates);
         } else {
-            Glide.with(this).load(user.getPhotoUrl()).centerCrop().into(image);
+            Glide.with(this).load(viewModel.getImgUser()).centerCrop().into(image);
         }
-        name.setText(user.getDisplayName());
-        email.setText(user.getEmail());
+        name.setText(viewModel.getNameUser());
+        email.setText(viewModel.getEmailUser());
 
         binding.toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -114,7 +112,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.nav_lunch) {
-            mFirebaseFirestore.collection("users").document(user.getEmail()).get()
+            mFirebaseFirestore.collection("users").document(viewModel.getEmailUser()).get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {

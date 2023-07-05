@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Looper;
 import android.util.Log;
 
@@ -27,6 +28,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -35,6 +38,8 @@ import java.io.Closeable;
 public class HomeViewModel extends ViewModel {
 
     private final RestaurantRepository mRestaurantRepository;
+
+    private FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
 
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
@@ -93,5 +98,19 @@ public class HomeViewModel extends ViewModel {
                         }
                     });
         }
+    }
+
+    /* Firebase Auth */
+
+    public String getNameUser() {
+        return mUser.getDisplayName();
+    }
+
+    public String getEmailUser() {
+        return mUser.getEmail();
+    }
+
+    public Uri getImgUser() {
+        return mUser.getPhotoUrl();
     }
 }
