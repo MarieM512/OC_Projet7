@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import com.example.projet7.data.OkhttpService;
 import com.example.projet7.databinding.FragmentMapViewBinding;
 import com.example.projet7.databinding.FragmentRestaurantDetailBinding;
+import com.example.projet7.ui.viewmodel.HomeViewModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -51,7 +52,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.myMap);
         supportMapFragment.getMapAsync(this);
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
+        viewModel = new ViewModelProvider(getActivity(), getDefaultViewModelProviderFactory()).get(HomeViewModel.class);
         mOkhttpService.setActivity(requireActivity());
 
         binding.fabLocation.setOnClickListener(new View.OnClickListener() {

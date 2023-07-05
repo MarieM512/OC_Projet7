@@ -1,4 +1,4 @@
-package com.example.projet7;
+package com.example.projet7.ui.viewmodel;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModel;
 
 import com.example.projet7.data.OkhttpService;
+import com.example.projet7.data.RestaurantRepository;
 import com.example.projet7.model.ResponseResult;
 import com.example.projet7.model.Restaurant;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,7 +30,11 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.Closeable;
+
 public class HomeViewModel extends ViewModel {
+
+    private final RestaurantRepository mRestaurantRepository;
 
     private LocationRequest mLocationRequest;
     private LocationCallback mLocationCallback;
@@ -38,7 +43,11 @@ public class HomeViewModel extends ViewModel {
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private OkhttpService mOkhttpService = OkhttpService.getInstance();
 
-    void getCurrentLocation(Context context, GoogleMap map) {
+    public HomeViewModel(RestaurantRepository restaurantRepository) {
+        this.mRestaurantRepository = restaurantRepository;
+    }
+
+    public void getCurrentLocation(Context context, GoogleMap map) {
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
         if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mLocationRequest = new LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
@@ -68,7 +77,7 @@ public class HomeViewModel extends ViewModel {
         }
     }
 
-    void getLastLocation(Context context, Activity activity, GoogleMap map) {
+    public void getLastLocation(Context context, Activity activity, GoogleMap map) {
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mFusedLocationProviderClient.getLastLocation()
                     .addOnSuccessListener(activity, new OnSuccessListener<Location>() {

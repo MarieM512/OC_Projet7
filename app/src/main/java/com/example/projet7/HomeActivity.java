@@ -5,9 +5,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -22,7 +24,9 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.projet7.databinding.ActivityHomeBinding;
+import com.example.projet7.injection.ViewModelFactory;
 import com.example.projet7.model.User;
+import com.example.projet7.ui.viewmodel.HomeViewModel;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,6 +51,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ActivityHomeBinding binding;
     private FirebaseAuth mFirebaseAuth;
     private NavController mNavController;
+    private NavHostFragment mNavHostFragment;
     private FirebaseUser user;
     private FirebaseFirestore mFirebaseFirestore;
 
@@ -57,7 +62,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         View view = binding.getRoot();
         setContentView(view);
 
-        mNavController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        mNavHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        mNavController = mNavHostFragment.getNavController();
         NavigationUI.setupWithNavController(binding.navigationBar, mNavController);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_map, R.id.nav_list, R.id.nav_workmates).setOpenableLayout(binding.drawer).build();
         NavigationUI.setupWithNavController(binding.toolbar, mNavController, appBarConfiguration);
@@ -72,6 +78,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         mFirebaseAuth = FirebaseAuth.getInstance();
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         user = mFirebaseAuth.getCurrentUser();
+
+        HomeViewModel viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(HomeViewModel.class);
 
         if (user.getPhotoUrl() == null) {
             image.setImageResource(R.drawable.ic_workmates);
