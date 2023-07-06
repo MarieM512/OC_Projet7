@@ -12,6 +12,7 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
@@ -19,7 +20,6 @@ import androidx.navigation.Navigation;
 
 import com.example.projet7.R;
 import com.example.projet7.data.ApiService;
-import com.example.projet7.data.ImgService;
 import com.example.projet7.data.RestaurantRepository;
 import com.example.projet7.model.ResponseResult;
 import com.example.projet7.model.Restaurant;
@@ -31,12 +31,17 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.Priority;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -127,7 +132,7 @@ public class HomeViewModel extends ViewModel {
                                 longitude = restaurant.getGeocodes().getMain().getLongitude();
                                 name = restaurant.getName();
                                 id = restaurant.getFsq_id();
-                                addMarkers(map, activity, latitude, longitude, name);
+                                addMarkers(map, activity, latitude, longitude, name, id);
                                 getImgPlace(name, id);
                             }
                         }
@@ -138,11 +143,25 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-    private void addMarkers(GoogleMap map, Activity activity, Double latitude, Double longitude, String name) {
+    private void addMarkers(GoogleMap map, Activity activity, Double latitude, Double longitude, String name, String id) {
         LatLng pos = new LatLng(latitude, longitude);
-        map.addMarker(new MarkerOptions()
-                .title(name)
-                .position(pos));
+        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+        firebaseFirestore.collection("users").whereEqualTo("idChoice", id).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (!value.getDocuments().isEmpty()) {
+                    map.addMarker(new MarkerOptions()
+                            .title(name)
+                            .position(pos)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                } else {
+                    map.addMarker(new MarkerOptions()
+                            .title(name)
+                            .position(pos));
+                }
+            }
+        });
+
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
