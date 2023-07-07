@@ -149,6 +149,9 @@ public class HomeViewModel extends ViewModel {
         firebaseFirestore.collection("users").whereEqualTo("idChoice", id).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (value == null) {
+                    return;
+                }
                 if (!value.getDocuments().isEmpty()) {
                     map.addMarker(new MarkerOptions()
                             .title(name)
