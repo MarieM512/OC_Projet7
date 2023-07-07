@@ -50,6 +50,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.Filter;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -63,6 +64,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -71,6 +73,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private NavHostFragment mNavHostFragment;
     private NavController mNavController;
     private ArrayList<String> restaurantName;
+    private Boolean exist = false;
 
     private FirebaseFirestore mFirebaseFirestore;
 
@@ -209,23 +212,39 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         return super.onCreateOptionsMenu(menu);
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-//        String currentDate = sdf.format(new Date());
-//
-//        Map<String, Object> choice = new HashMap<>();
-//        choice.put("id", "");
-//        choice.put("name", "");
-//        choice.put("type", "");
-//        choice.put("address", "");
-//        choice.put("image", "");
-//        mFirebaseFirestore.collection(currentDate).document(viewModel.getEmailUser()).set(choice).addOnCompleteListener(new OnCompleteListener<Void>() {
-//            @Override
-//            public void onComplete(@NonNull Task<Void> task) {
-//                Log.d("TAG", "onComplete: created");
-//            }
-//        });
-//    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        String currentDate = sdf.format(new Date());
+
+        Map<String, Object> choice = new HashMap<>();
+        choice.put("date", currentDate);
+        choice.put("email", viewModel.getEmailUser());
+        choice.put("id", "");
+        mFirebaseFirestore.collection("choice")
+                .whereEqualTo("date", currentDate)
+                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    for (DocumentSnapshot dc: task.getResult().getDocuments()) {
+                        if (Objects.equals(dc.get("email"), viewModel.getEmailUser())) {
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if (!exist) {
+                        mFirebaseFirestore.collection("choice").document().set(choice).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d("TAG", "onComplete: New choice created");
+                            }
+                        });
+                        exist = false;
+                    }
+                }
+            }
+        });
+    }
 }
