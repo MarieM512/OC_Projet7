@@ -35,7 +35,7 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull DetailViewHolder holder, int position) {
         User user = mUserArrayList.get(position);
-        holder.detail.setText(user.getName() + " is joining!");
+        holder.detail.setText(user.getName() + " " + mContext.getString(R.string.detail_join));
         holder.detail.setEnabled(true);
         holder.detail.setTypeface(Typeface.DEFAULT);
         if (user.getPhoto() == null) {

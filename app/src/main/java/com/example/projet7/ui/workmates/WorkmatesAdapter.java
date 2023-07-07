@@ -36,9 +36,9 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> 
         User user = mUserArrayList.get(position);
         String information;
         if (Objects.equals(user.getNameChoice(), "")) {
-            information = user.getName() + " hasn't decided yet";
+            information = user.getName() + " " + mContext.getString(R.string.list_no_choice);
         } else {
-            information = user.getName() + " is eating " + user.getTypeChoice() + " (" + user.getNameChoice() + ")";
+            information = user.getName() + " " + mContext.getString(R.string.list_choice) + " " + user.getTypeChoice() + " (" + user.getNameChoice() + ")";
             holder.detail.setEnabled(true);
             holder.detail.setTypeface(Typeface.DEFAULT);
         }

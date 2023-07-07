@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Go 4 Lunch</string>
     <string name="login_facebook">Se connecter avec Facebook</string>
     <string name="login_google">Se connecter avec Google</string>
     <string name="login_mail">Se connecter avec par mail</string>
@@ -22,4 +21,7 @@
     <string name="notif_title">Il est l\'heure d\'aller manger chez</string>
     <string name="notif_body_start">Aller à</string>
     <string name="notif_body_middle">pour rejoindre</string>
+    <string name="detail_join">vous rejoint!</string>
+    <string name="list_no_choice">n\'a pas encore décidé</string>
+    <string name="list_choice">mange</string>
 </resources>

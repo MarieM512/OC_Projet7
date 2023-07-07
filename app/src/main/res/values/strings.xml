@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Go 4 Lunch</string>
+    <string name="app_name" translatable="false">Go 4 Lunch</string>
     <string name="app_name_without_space" translatable="false">Go4Lunch</string>
 
     <!-- Connection -->
@@ -36,4 +36,9 @@
     <string name="notif_body_middle">to join</string>
     <string name="channel_name" translatable="false">Head</string>
     <string name="channel_description" translatable="false">Info</string>
+
+    <!-- Workmates -->
+    <string name="detail_join">is joining!</string>
+    <string name="list_no_choice">hasn\'t decided yet</string>
+    <string name="list_choice">is eating</string>
 </resources>
