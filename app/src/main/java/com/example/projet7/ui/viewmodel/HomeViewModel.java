@@ -45,7 +45,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeViewModel extends ViewModel {
 
@@ -55,6 +57,8 @@ public class HomeViewModel extends ViewModel {
     private Double longitude = 0.00;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     Handler mainHandler = new Handler(Looper.getMainLooper());
+    private List<Marker> mMarkerList = new ArrayList<>();
+    private GoogleMap mGoogleMap;
 
     public HomeViewModel(RestaurantRepository restaurantRepository) {
         this.mRestaurantRepository = restaurantRepository;
@@ -81,6 +85,7 @@ public class HomeViewModel extends ViewModel {
                             latitude = locationResult.getLastLocation().getLatitude();
                             longitude = locationResult.getLastLocation().getLongitude();
                             focusCamera(map);
+                            mGoogleMap = map;
                             setParam(latitude, longitude, activity, map);
                         }
                     }
@@ -153,14 +158,16 @@ public class HomeViewModel extends ViewModel {
                     return;
                 }
                 if (!value.getDocuments().isEmpty()) {
-                    map.addMarker(new MarkerOptions()
+                    Marker marker = map.addMarker(new MarkerOptions()
                             .title(name)
                             .position(pos)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                    mMarkerList.add(marker);
                 } else {
-                    map.addMarker(new MarkerOptions()
+                    Marker marker = map.addMarker(new MarkerOptions()
                             .title(name)
                             .position(pos));
+                    mMarkerList.add(marker);
                 }
             }
         });
@@ -185,6 +192,15 @@ public class HomeViewModel extends ViewModel {
 
     private void getImgPlace(String name, String id) {
         mRestaurantRepository.getImgPlace(name, id);
+    }
+
+    public void getMarker(String name) {
+        for (Marker marker: mMarkerList) {
+            if (Objects.equals(marker.getTitle(), name)) {
+                mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
+                marker.showInfoWindow();
+            }
+        }
     }
 
     /* Firebase Auth */
