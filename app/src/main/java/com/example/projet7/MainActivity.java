@@ -83,12 +83,8 @@ public class MainActivity extends AppCompatActivity {
                         } else {
                             Map<String, Object> data = new HashMap<>();
                             data.put("name", user.getDisplayName());
-                            data.put("photo", user.getPhotoUrl());
-                            data.put("idChoice", "");
-                            data.put("nameChoice", "");
-                            data.put("typeChoice", "");
-                            data.put("addressChoice", "");
-                            data.put("imageChoice", "");
+                            data.put("image", user.getPhotoUrl());
+                            data.put("email", user.getEmail());
                             data.put("favorite", Arrays.asList());
                             data.put("notification", true);
                             mFirebaseFirestore.collection("users").document(user.getEmail()).set(data).addOnCompleteListener(new OnCompleteListener<Void>() {

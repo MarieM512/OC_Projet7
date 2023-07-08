@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,11 +20,17 @@ import com.example.projet7.ui.viewmodel.HomeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder> {
 
@@ -50,25 +57,27 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, @SuppressLint("RecyclerView") int position) {
-        mFirebaseFirestore.collection("users").whereEqualTo("idChoice", mHomeViewModel.getId(position)).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        String currentDate = sdf.format(new Date());
+        mFirebaseFirestore.collection("choice").whereEqualTo("date", currentDate)
+                .addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            if (!task.getResult().isEmpty()) {
-                                int size = task.getResult().size();
-                                for (int i = 0; i<task.getResult().size(); i++) {
-                                    if (task.getResult().getDocuments().get(i).getId().equals(mHomeViewModel.getEmailUser())) {
-                                        size -= 1;
-                                    }
-                                }
-                                if (size > 0) {
-                                    holder.reserved.setVisibility(View.VISIBLE);
-                                    holder.reserved.setText("(" + size + ")");
+                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                        if (value == null) {
+                            return;
+                        }
+                        int size = 0;
+                        for (DocumentChange dc : value.getDocumentChanges()) {
+                            if (dc.getDocument().get("id").equals(mHomeViewModel.getId(position))) {
+                                size++;
+                                if (dc.getDocument().getData().get("email").equals(mHomeViewModel.getEmailUser())) {
+                                    size--;
                                 }
                             }
-                        } else {
-                            Log.d("TAG", "onComplete: ", task.getException());
+                        }
+                        if (size > 0) {
+                            holder.reserved.setVisibility(View.VISIBLE);
+                            holder.reserved.setText("(" + size + ")");
                         }
                     }
                 });

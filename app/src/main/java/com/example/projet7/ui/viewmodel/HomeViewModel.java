@@ -35,9 +35,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -45,7 +49,10 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,6 +66,8 @@ public class HomeViewModel extends ViewModel {
     Handler mainHandler = new Handler(Looper.getMainLooper());
     private List<Marker> mMarkerList = new ArrayList<>();
     private GoogleMap mGoogleMap;
+    private Marker mMarker;
+    private Boolean isSomeone = false;
 
     public HomeViewModel(RestaurantRepository restaurantRepository) {
         this.mRestaurantRepository = restaurantRepository;
@@ -129,6 +138,7 @@ public class HomeViewModel extends ViewModel {
                     Double longitude;
                     String name;
                     String id;
+
                     @Override
                     public void run() {
                         if (!jsonRestaurant.isEmpty()) {
@@ -151,23 +161,33 @@ public class HomeViewModel extends ViewModel {
     private void addMarkers(GoogleMap map, Activity activity, Double latitude, Double longitude, String name, String id) {
         LatLng pos = new LatLng(latitude, longitude);
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseFirestore.collection("users").whereEqualTo("idChoice", id).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+        String currentDate = sdf.format(new Date());
+
+        firebaseFirestore.collection("choice").whereEqualTo("date", currentDate).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (value == null) {
                     return;
                 }
-                if (!value.getDocuments().isEmpty()) {
-                    Marker marker = map.addMarker(new MarkerOptions()
+                for (DocumentChange dc : value.getDocumentChanges()) {
+                    if (dc.getDocument().get("id").equals(id)) {
+                        isSomeone = true;
+                    }
+                }
+                if (isSomeone) {
+                    mMarker = map.addMarker(new MarkerOptions()
                             .title(name)
                             .position(pos)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                    mMarkerList.add(marker);
+                    isSomeone = false;
                 } else {
-                    Marker marker = map.addMarker(new MarkerOptions()
+                    mMarker = map.addMarker(new MarkerOptions()
                             .title(name)
                             .position(pos));
-                    mMarkerList.add(marker);
+                }
+                if (!mMarkerList.contains(mMarker)) {
+                    mMarkerList.add(mMarker);
                 }
             }
         });
@@ -195,7 +215,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public void getMarker(String name) {
-        for (Marker marker: mMarkerList) {
+        for (Marker marker : mMarkerList) {
             if (Objects.equals(marker.getTitle(), name)) {
                 mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 marker.showInfoWindow();
@@ -249,5 +269,19 @@ public class HomeViewModel extends ViewModel {
 
     public String getImgRV(int position) {
         return mRestaurantRepository.getImgRV(getName(position));
+    }
+
+    public HashMap<String, String> getLunch(String id) {
+        HashMap<String, String> lunch = new HashMap<>();
+        for (Restaurant restaurant : getRestaurants()) {
+            if (restaurant.getFsq_id().equals(id)) {
+                lunch.put("name", restaurant.getName());
+                lunch.put("type", restaurant.getCategories().get(0).getName());
+                lunch.put("address", restaurant.getLocation().getAddress());
+                lunch.put("image", mRestaurantRepository.getImgDetail(restaurant.getName()));
+                break;
+            }
+        }
+        return lunch;
     }
 }

@@ -126,25 +126,29 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.nav_lunch) {
-            mFirebaseFirestore.collection("users").document(viewModel.getEmailUser()).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+            String currentDate = sdf.format(new Date());
+            mFirebaseFirestore.collection("choice").whereEqualTo("date", currentDate).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
-                        if (task.getResult().getData().get("idChoice").equals("")) {
-                            Toast.makeText(HomeActivity.this, getString(R.string.message_no_lunch_selected), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Bundle bundle = new Bundle();
-                            bundle.putString("id", task.getResult().get("idChoice").toString());
-                            bundle.putString("name", task.getResult().get("nameChoice").toString());
-                            bundle.putString("type", task.getResult().get("typeChoice").toString());
-                            bundle.putString("address", task.getResult().get("addressChoice").toString());
-                            bundle.putString("image", task.getResult().get("imageChoice").toString());
-                            mNavController.navigate(R.id.nav_detail, bundle);
-                            binding.drawer.closeDrawer(GravityCompat.START);
+                        for (DocumentChange dc: task.getResult().getDocumentChanges()) {
+                            if (dc.getDocument().get("email").equals(viewModel.getEmailUser())) {
+                                if (dc.getDocument().get("id").equals("")) {
+                                    Toast.makeText(HomeActivity.this, getString(R.string.message_no_lunch_selected), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Bundle bundle = new Bundle();
+                                    String id = dc.getDocument().get("id").toString();
+                                    bundle.putString("id", id);
+                                    bundle.putString("name", viewModel.getLunch(id).get("name"));
+                                    bundle.putString("type", viewModel.getLunch(id).get("type"));
+                                    bundle.putString("address", viewModel.getLunch(id).get("address"));
+                                    bundle.putString("image", viewModel.getLunch(id).get("image"));
+                                    mNavController.navigate(R.id.nav_detail, bundle);
+                                    binding.drawer.closeDrawer(GravityCompat.START);
+                                }
+                            }
                         }
-                    } else {
-                        Log.d("TAG", "onComplete: " , task.getException());
                     }
                 }
             });
