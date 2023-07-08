@@ -9,4 +9,5 @@ public interface FirebaseCallback {
     void getUserDatabaseById(HashMap<String, Object> hashMap);
     void getChoiceDataByCurrentDate(HashMap<String, String> hashMap);
     void getUserIsEating(ArrayList<Choice> choiceArrayList);
+    void getUserNumberForRestaurant(int size);
 }

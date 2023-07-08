@@ -106,4 +106,18 @@ public class FirebaseService {
             }
         });
     }
+
+    public void getUserNumberForRestaurant(String id, String email, FirebaseCallback callback) {
+        choice.whereEqualTo("date", currentDate).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                int size = 0;
+                for (QueryDocumentSnapshot document: task.getResult()) {
+                    if (document.get("id").equals(id) && !document.get("email").equals(email)) {
+                        size++;
+                    }
+                }
+                callback.getUserNumberForRestaurant(size);
+            }
+        });
+    }
 }

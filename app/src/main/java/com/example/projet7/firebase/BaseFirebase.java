@@ -20,4 +20,9 @@ public abstract class BaseFirebase implements FirebaseCallback {
     public void getUserIsEating(ArrayList<Choice> choiceArrayList) {
 
     }
+
+    @Override
+    public void getUserNumberForRestaurant(int size) {
+
+    }
 }
