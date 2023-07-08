@@ -11,10 +11,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.projet7.R;
+import com.example.projet7.firebase.BaseFirebase;
 import com.example.projet7.firebase.FirebaseService;
 import com.example.projet7.model.Choice;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
@@ -40,16 +42,20 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
     public void onBindViewHolder(@NonNull DetailViewHolder holder, int position) {
         Choice choice = mChoiceArrayList.get(position);
 
-        mFirebaseService.getUserDatabaseById(choice.getEmail(), hashMap -> {
-            String name = Objects.requireNonNull(hashMap.get("name")).toString();
-            String image = Objects.requireNonNull(hashMap.get("image")).toString();
-            holder.detail.setText(name + " " + mContext.getString(R.string.detail_join));
-            holder.detail.setEnabled(true);
-            holder.detail.setTypeface(Typeface.DEFAULT);
-            if (image.isEmpty()) {
-                holder.image.setImageResource(R.drawable.ic_workmates);
-            } else {
-                Glide.with(mContext).load(image).centerCrop().into(holder.image);
+        mFirebaseService.getUserDatabaseById(choice.getEmail(), new BaseFirebase() {
+            @Override
+            public void getUserDatabaseById(HashMap<String, Object> hashMap) {
+                super.getUserDatabaseById(hashMap);
+                String name = Objects.requireNonNull(hashMap.get("name")).toString();
+                String image = Objects.requireNonNull(hashMap.get("image")).toString();
+                holder.detail.setText(name + " " + mContext.getString(R.string.detail_join));
+                holder.detail.setEnabled(true);
+                holder.detail.setTypeface(Typeface.DEFAULT);
+                if (image.isEmpty()) {
+                    holder.image.setImageResource(R.drawable.ic_workmates);
+                } else {
+                    Glide.with(mContext).load(image).centerCrop().into(holder.image);
+                }
             }
         });
     }
