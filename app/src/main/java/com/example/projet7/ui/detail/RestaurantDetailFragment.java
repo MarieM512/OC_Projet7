@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.bumptech.glide.Glide;
 import com.example.projet7.R;
 import com.example.projet7.databinding.FragmentRestaurantDetailBinding;
+import com.example.projet7.firebase.FirebaseService;
 import com.example.projet7.model.Choice;
 import com.example.projet7.ui.viewmodel.HomeViewModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -36,6 +37,7 @@ public class RestaurantDetailFragment extends Fragment {
 
     private FragmentRestaurantDetailBinding binding;
     private HomeViewModel viewModel;
+    private FirebaseService mFirebaseService;
 
     FirebaseFirestore mFirebaseFirestore;
     ArrayList<Choice> mChoiceArrayList;
@@ -59,6 +61,8 @@ public class RestaurantDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentRestaurantDetailBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
+
+        mFirebaseService = FirebaseService.getInstance();
 
         mFirebaseFirestore = FirebaseFirestore.getInstance();
         mChoiceArrayList = new ArrayList<>();
@@ -97,7 +101,7 @@ public class RestaurantDetailFragment extends Fragment {
         binding.address.setText(restaurantAddress);
         Glide.with(requireContext()).load(restaurantImage).centerCrop().into(binding.image);
         binding.rvDetailWorkmates.setLayoutManager(new LinearLayoutManager(requireContext()));
-        mAdapter = new DetailAdapter(requireContext(), mChoiceArrayList);
+        mAdapter = new DetailAdapter(requireContext(), mChoiceArrayList, mFirebaseService);
         binding.rvDetailWorkmates.setAdapter(mAdapter);
 
         binding.fabRestaurant.setOnClickListener(new View.OnClickListener() {
