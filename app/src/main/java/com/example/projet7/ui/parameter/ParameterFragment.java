@@ -4,26 +4,22 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 
 import com.example.projet7.databinding.FragmentParameterBinding;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.projet7.firebase.BaseFirebase;
+import com.example.projet7.firebase.FirebaseService;
+import com.example.projet7.ui.viewmodel.HomeViewModel;
+
+import java.util.HashMap;
 
 public class ParameterFragment extends Fragment {
 
-    FragmentParameterBinding binding;
-    FirebaseFirestore mFirebaseFirestore;
-    FirebaseUser user;
+    private FragmentParameterBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,47 +28,28 @@ public class ParameterFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentParameterBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
 
-        mFirebaseFirestore = FirebaseFirestore.getInstance();
-        user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseService firebaseService = FirebaseService.getInstance();
+        HomeViewModel viewModel = new ViewModelProvider(requireActivity(), getDefaultViewModelProviderFactory()).get(HomeViewModel.class);
 
-        mFirebaseFirestore.collection("users").document(user.getEmail()).get()
-                        .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    Boolean notification = (Boolean) task.getResult().getData().get("notification");
-                                    binding.notificationSwitch.setChecked(notification);
-                                }
-                            }
-                        });
-
-        binding.notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        firebaseService.getUserDatabaseById(viewModel.getEmailUser(), new BaseFirebase() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mFirebaseFirestore.collection("users").document(user.getEmail()).update(
-                            "notification", true
-                    ).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.d("Notification", "Set notification to true");
-                        }
-                    });
-                } else {
-                    mFirebaseFirestore.collection("users").document(user.getEmail()).update(
-                            "notification", false
-                    ).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            Log.d("Notification", "Set notification to false");
-                        }
-                    });
-                }
+            public void getUserDatabaseById(HashMap<String, Object> hashMap) {
+                super.getUserDatabaseById(hashMap);
+                Boolean notification = (Boolean) hashMap.get("notification");
+                binding.notificationSwitch.setChecked(Boolean.TRUE.equals(notification));
+            }
+        });
+
+        binding.notificationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                firebaseService.setUserData(viewModel.getEmailUser(), "notification", true);
+            } else {
+                firebaseService.setUserData(viewModel.getEmailUser(), "notification", false);
             }
         });
         return view;
