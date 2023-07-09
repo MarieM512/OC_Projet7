@@ -31,4 +31,14 @@ public abstract class BaseFirebase implements FirebaseCallback {
     public void getAllUserExceptSelf(ArrayList<User> userArrayList) {
 
     }
+
+    @Override
+    public void getIdChoiceOfUser(String id) {
+
+    }
+
+    @Override
+    public void getInfoChoice(HashMap<String, String> hashMap) {
+
+    }
 }

@@ -11,5 +11,7 @@ public interface FirebaseCallback {
     void getChoiceDataByCurrentDate(HashMap<String, String> hashMap);
     void getUserIsEating(ArrayList<Choice> choiceArrayList);
     void getUserNumberForRestaurant(int size);
-    void getAllUserExceptSelf(ArrayList<User>userArrayList);
+    void getAllUserExceptSelf(ArrayList<User> userArrayList);
+    void getIdChoiceOfUser(String id);
+    void getInfoChoice(HashMap<String, String> hashMap);
 }

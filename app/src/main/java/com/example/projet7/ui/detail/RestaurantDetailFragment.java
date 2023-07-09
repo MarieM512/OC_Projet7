@@ -54,7 +54,7 @@ public class RestaurantDetailFragment extends Fragment {
         String restaurantAddress = getArguments().getString("address");
         String restaurantImage = getArguments().getString("image");
 
-        mFirebaseService.getChoiceDataByCurrentDate(new BaseFirebase() {
+        mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
             public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
@@ -94,7 +94,7 @@ public class RestaurantDetailFragment extends Fragment {
         binding.fabRestaurant.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mFirebaseService.getChoiceDataByCurrentDate(new BaseFirebase() {
+                mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
                     @SuppressLint("UseCompatLoadingForDrawables")
                     @Override
                     public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {

@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.projet7.model.Choice;
 import com.example.projet7.model.User;
+import com.example.projet7.ui.viewmodel.HomeViewModel;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,6 +28,9 @@ public class FirebaseService {
     private static final String TAG = "Firebase Service";
     private ArrayList<Choice> mChoiceArrayList;
     private ArrayList<User> mUserArrayList;
+    private HomeViewModel viewModel;
+    public String name;
+    public String address;
 
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -61,7 +65,8 @@ public class FirebaseService {
         });
     }
 
-    public void getChoiceDataByCurrentDate(FirebaseCallback callback) {
+    public void getChoiceDataByCurrentDate(HomeViewModel viewModel, FirebaseCallback callback) {
+        this.viewModel = viewModel;
         HashMap<String, String> currentChoice = new HashMap<>();
         choice.whereEqualTo("date", currentDate).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -163,6 +168,25 @@ public class FirebaseService {
                 }
             }
         });
+    }
+
+    public void getIdChoiceOfUser(String email, FirebaseCallback callback) {
+        choice.whereEqualTo("date", currentDate).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document: task.getResult()) {
+                    if (Objects.equals(document.get("email"), email)) {
+                        callback.getIdChoiceOfUser(Objects.requireNonNull(document.get("id")).toString());
+                    }
+                }
+            }
+        });
+    }
+
+    public void getInfoChoice(String id, FirebaseCallback callback) {
+        HashMap<String, String> info = new HashMap<>();
+        info.put("name", viewModel.getLunch(id).get("name"));
+        info.put("address", viewModel.getLunch(id).get("address"));
+        callback.getInfoChoice(info);
     }
 
     private void setNewUser(HashMap<String, Object> user) {

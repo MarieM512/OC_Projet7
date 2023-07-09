@@ -44,7 +44,7 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> 
     public void onBindViewHolder(@NonNull WorkmatesViewHolder holder, int position) {
         User user = mUserArrayList.get(position);
 
-        mFirebaseService.getChoiceDataByCurrentDate(new BaseFirebase() {
+        mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
             @Override
             public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
                 super.getChoiceDataByCurrentDate(hashMap);

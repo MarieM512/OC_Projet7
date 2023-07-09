@@ -9,77 +9,103 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.projet7.HomeActivity;
 import com.example.projet7.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.projet7.firebase.BaseFirebase;
+import com.example.projet7.firebase.FirebaseService;
+import com.example.projet7.model.Choice;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Objects;
 
 public class PushNotificationService extends FirebaseMessagingService {
 
-    FirebaseFirestore mFirebaseFirestore = FirebaseFirestore.getInstance();
-    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-    ArrayList<String> workmatesList = new ArrayList<>();
-    private String channelId = "channelId";
+    private final FirebaseService mFirebaseService = FirebaseService.getInstance();
+    private final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+    private final ArrayList<String> workmatesList = new ArrayList<>();
+    private String name;
+    private String address;
+    private String workmates;
+    private int size;
 
     @Override
     public void onMessageReceived(@NonNull RemoteMessage message) {
         super.onMessageReceived(message);
         if (message.getNotification() != null) {
-            mFirebaseFirestore.collection("users").document(user.getEmail()).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                Boolean notification = (Boolean) task.getResult().getData().get("notification");
-                                String idChoice = (String) task.getResult().getData().get("idChoice");
-                                Boolean choice = !idChoice.isEmpty();
-                                if (notification && choice) {
-                                    String nameChoice = (String) task.getResult().getData().get("nameChoice");
-                                    String addressChoice = (String) task.getResult().getData().get("addressChoice");
-                                    mFirebaseFirestore.collection("users").whereEqualTo("idChoice", idChoice)
-                                            .addSnapshotListener(new EventListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                                                    for (DocumentChange dc : value.getDocumentChanges()) {
-                                                        if (!dc.getDocument().getId().equals(user.getEmail())) {
-                                                            workmatesList.add(dc.getDocument().get("name").toString());
+
+            mFirebaseService.getUserDatabaseById(user.getEmail(), new BaseFirebase() {
+                @Override
+                public void getUserDatabaseById(HashMap<String, Object> hashMap) {
+                    super.getUserDatabaseById(hashMap);
+                    if (Objects.equals(hashMap.get("notification"), true)) {
+                        mFirebaseService.getIdChoiceOfUser(user.getEmail(), new BaseFirebase() {
+                            @Override
+                            public void getIdChoiceOfUser(String id) {
+                                super.getIdChoiceOfUser(id);
+                                if (!id.isEmpty()) {
+                                    mFirebaseService.getInfoChoice(id, new BaseFirebase() {
+                                        @Override
+                                        public void getInfoChoice(HashMap<String, String> hashMap) {
+                                            super.getInfoChoice(hashMap);
+                                            name = hashMap.get("name");
+                                            address = hashMap.get("address");
+                                        }
+                                    });
+                                    mFirebaseService.getUserIsEating(user.getEmail(), id, new BaseFirebase() {
+                                        @Override
+                                        public void getUserIsEating(ArrayList<Choice> choiceArrayList) {
+                                            super.getUserIsEating(choiceArrayList);
+                                            size = choiceArrayList.size();
+                                            if (size == 0) {
+                                                workmates = String.join(", ", workmatesList);
+                                                sendNotification(name, address, workmates);
+                                            }
+                                            for (Choice choice: choiceArrayList) {
+                                                mFirebaseService.getUserDatabaseById(choice.getEmail(), new BaseFirebase() {
+                                                    @Override
+                                                    public void getUserDatabaseById(HashMap<String, Object> hashMap) {
+                                                        super.getUserDatabaseById(hashMap);
+                                                        workmatesList.add(Objects.requireNonNull(hashMap.get("name")).toString());
+                                                        size--;
+                                                        if (size == 0) {
+                                                            workmates = String.join(", ", workmatesList);
+                                                            sendNotification(name, address, workmates);
                                                         }
                                                     }
-                                                    String workmates = String.join(", ", workmatesList);
-                                                    sendNotification(nameChoice, addressChoice, workmates);
-                                                }
-                                            });
+                                                });
+                                            }
+                                        }
+                                    });
                                 }
                             }
-                        }
-                    });
+                        });
+                    }
+                }
+            });
         }
     }
-
 
     private void sendNotification(String name, String address, String workmates) {
         Intent intent = new Intent(this, HomeActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
         String title = getString(R.string.notif_title) + " " + name;
-        String body = getString(R.string.notif_body_start) + " " + address + " " + getString(R.string.notif_body_middle) + " " + workmates;
+        String body;
+        if (workmates.isEmpty()) {
+            body = getString(R.string.notif_body_start) + " " + address;
+        } else {
+            body = getString(R.string.notif_body_start) + " " + address + " " + getString(R.string.notif_body_middle) + " " + workmates;
+        }
+        String channelId = "channelId";
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, channelId)
                         .setSmallIcon(R.drawable.logo)

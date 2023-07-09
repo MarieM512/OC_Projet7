@@ -14,6 +14,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -97,7 +98,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.nav_lunch) {
-            mFirebaseService.getChoiceDataByCurrentDate(new BaseFirebase() {
+            mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
                 @Override
                 public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
                     super.getChoiceDataByCurrentDate(hashMap);
@@ -176,7 +177,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
 
-        mFirebaseService.getChoiceDataByCurrentDate(new BaseFirebase() {
+        mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
             @Override
             public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
                 super.getChoiceDataByCurrentDate(hashMap);
