@@ -5,12 +5,14 @@ import android.util.Log;
 
 import com.example.projet7.model.Choice;
 import com.example.projet7.model.User;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -144,5 +146,26 @@ public class FirebaseService {
         choiceData.put("email", email);
         choiceData.put("id", "");
         choice.document().set(choiceData).addOnCompleteListener(task -> Log.d(TAG, "New choice created"));
+    }
+
+    public void createUser(FirebaseUser user) {
+        users.document(Objects.requireNonNull(user.getEmail())).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                boolean exist = task.getResult().exists();
+                if (!exist) {
+                    HashMap<String, Object> userData = new HashMap<>();
+                    userData.put("name", user.getDisplayName());
+                    userData.put("image", user.getPhotoUrl());
+                    userData.put("email", user.getEmail());
+                    userData.put("favorite", Collections.emptyList());
+                    userData.put("notification", true);
+                    setNewUser(userData);
+                }
+            }
+        });
+    }
+
+    private void setNewUser(HashMap<String, Object> user) {
+        users.document(Objects.requireNonNull(user.get("email")).toString()).set(user).addOnCompleteListener(task -> Log.d(TAG, "User created"));
     }
 }
