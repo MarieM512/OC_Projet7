@@ -1,28 +1,19 @@
 package com.example.projet7;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.MenuItemCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.NavDestination;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import android.annotation.SuppressLint;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,35 +26,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.projet7.databinding.ActivityHomeBinding;
+import com.example.projet7.firebase.BaseFirebase;
+import com.example.projet7.firebase.FirebaseService;
 import com.example.projet7.injection.ViewModelFactory;
 import com.example.projet7.model.Restaurant;
-import com.example.projet7.model.User;
 import com.example.projet7.ui.viewmodel.HomeViewModel;
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.Filter;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 
-import org.w3c.dom.Text;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class HomeActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -75,7 +46,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     private ArrayList<String> restaurantName;
     private Boolean exist = false;
 
-    private FirebaseFirestore mFirebaseFirestore;
+    private FirebaseService mFirebaseService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +70,9 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         ImageView image = headView.findViewById(R.id.image_nav);
         TextView name = headView.findViewById(R.id.tv_name_nav);
         TextView email = headView.findViewById(R.id.tv_email_nav);
-        mFirebaseFirestore = FirebaseFirestore.getInstance();
 
         viewModel = new ViewModelProvider(this, ViewModelFactory.getInstance(this)).get(HomeViewModel.class);
+        mFirebaseService = FirebaseService.getInstance();
 
         if (viewModel.getImgUser() == null) {
             image.setImageResource(R.drawable.ic_workmates);
@@ -126,29 +97,22 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.nav_lunch) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-            String currentDate = sdf.format(new Date());
-            mFirebaseFirestore.collection("choice").whereEqualTo("date", currentDate).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            mFirebaseService.getChoiceDataByCurrentDate(new BaseFirebase() {
                 @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        for (DocumentChange dc: task.getResult().getDocumentChanges()) {
-                            if (dc.getDocument().get("email").equals(viewModel.getEmailUser())) {
-                                if (dc.getDocument().get("id").equals("")) {
-                                    Toast.makeText(HomeActivity.this, getString(R.string.message_no_lunch_selected), Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Bundle bundle = new Bundle();
-                                    String id = dc.getDocument().get("id").toString();
-                                    bundle.putString("id", id);
-                                    bundle.putString("name", viewModel.getLunch(id).get("name"));
-                                    bundle.putString("type", viewModel.getLunch(id).get("type"));
-                                    bundle.putString("address", viewModel.getLunch(id).get("address"));
-                                    bundle.putString("image", viewModel.getLunch(id).get("image"));
-                                    mNavController.navigate(R.id.nav_detail, bundle);
-                                    binding.drawer.closeDrawer(GravityCompat.START);
-                                }
-                            }
-                        }
+                public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
+                    super.getChoiceDataByCurrentDate(hashMap);
+                    if (!Objects.equals(hashMap.get(viewModel.getEmailUser()), "")) {
+                        Bundle bundle = new Bundle();
+                        String id = hashMap.get(viewModel.getEmailUser());
+                        bundle.putString("id", id);
+                        bundle.putString("name", viewModel.getLunch(id).get("name"));
+                        bundle.putString("type", viewModel.getLunch(id).get("type"));
+                        bundle.putString("address", viewModel.getLunch(id).get("address"));
+                        bundle.putString("image", viewModel.getLunch(id).get("image"));
+                        mNavController.navigate(R.id.nav_detail, bundle);
+                        binding.drawer.closeDrawer(GravityCompat.START);
+                    } else {
+                        Toast.makeText(getBaseContext(), getString(R.string.message_no_lunch_selected), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -156,15 +120,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             mNavController.navigate(R.id.nav_parameter);
             binding.drawer.closeDrawer(GravityCompat.START);
         } else if (item.getItemId() == R.id.nav_logout) {
-            AuthUI.getInstance().signOut(this)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            finish();
-                        } else {
-                            Toast.makeText(this, "Error logout", Toast.LENGTH_SHORT).show();
-                            Log.d("Logout", String.valueOf(task.getException()));
-                        }
-                    });
+            viewModel.logout(getBaseContext(), this);
         }
         return true;
     }
@@ -219,34 +175,19 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onResume() {
         super.onResume();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        String currentDate = sdf.format(new Date());
 
-        Map<String, Object> choice = new HashMap<>();
-        choice.put("date", currentDate);
-        choice.put("email", viewModel.getEmailUser());
-        choice.put("id", "");
-        mFirebaseFirestore.collection("choice")
-                .whereEqualTo("date", currentDate)
-                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        mFirebaseService.getChoiceDataByCurrentDate(new BaseFirebase() {
             @Override
-            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                if (task.isSuccessful()) {
-                    for (DocumentSnapshot dc: task.getResult().getDocuments()) {
-                        if (Objects.equals(dc.get("email"), viewModel.getEmailUser())) {
-                            exist = true;
-                            break;
-                        }
+            public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
+                super.getChoiceDataByCurrentDate(hashMap);
+                for (String email: hashMap.keySet()) {
+                    if (email.equals(viewModel.getEmailUser())) {
+                        exist = true;
+                        break;
                     }
-                    if (!exist) {
-                        mFirebaseFirestore.collection("choice").document().set(choice).addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d("TAG", "onComplete: New choice created");
-                            }
-                        });
-                        exist = false;
-                    }
+                }
+                if (!exist) {
+                    mFirebaseService.createChoice(viewModel.getEmailUser());
                 }
             }
         });

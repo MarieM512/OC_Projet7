@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -24,6 +25,7 @@ import com.example.projet7.firebase.BaseFirebase;
 import com.example.projet7.firebase.FirebaseService;
 import com.example.projet7.model.ResponseResult;
 import com.example.projet7.model.Restaurant;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -59,6 +61,7 @@ public class HomeViewModel extends ViewModel {
     private List<Marker> mMarkerList = new ArrayList<>();
     private GoogleMap mGoogleMap;
     private Marker mMarker;
+    private static String TAG = "Home ViewModel";
 
     public HomeViewModel(RestaurantRepository restaurantRepository, FirebaseService firebaseService) {
         this.mRestaurantRepository = restaurantRepository;
@@ -216,6 +219,17 @@ public class HomeViewModel extends ViewModel {
 
     public Uri getImgUser() {
         return mUser.getPhotoUrl();
+    }
+
+    public void logout(Context context, Activity activity) {
+        AuthUI.getInstance().signOut(context)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        activity.finish();
+                    } else {
+                        Log.d(TAG, String.valueOf(task.getException()));
+                    }
+                });
     }
 
     /* API */

@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class FirebaseService {
@@ -135,5 +136,13 @@ public class FirebaseService {
                 callback.getAllUserExceptSelf(mUserArrayList);
             }
         });
+    }
+
+    public void createChoice(String email) {
+        Map<String, Object> choiceData = new HashMap<>();
+        choiceData.put("date", currentDate);
+        choiceData.put("email", email);
+        choiceData.put("id", "");
+        choice.document().set(choiceData).addOnCompleteListener(task -> Log.d(TAG, "New choice created"));
     }
 }
