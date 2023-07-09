@@ -12,7 +12,6 @@ import android.os.Looper;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModel;
 import androidx.navigation.NavController;
@@ -21,6 +20,8 @@ import androidx.navigation.Navigation;
 import com.example.projet7.R;
 import com.example.projet7.data.ApiService;
 import com.example.projet7.data.RestaurantRepository;
+import com.example.projet7.firebase.BaseFirebase;
+import com.example.projet7.firebase.FirebaseService;
 import com.example.projet7.model.ResponseResult;
 import com.example.projet7.model.Restaurant;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -35,23 +36,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -59,6 +50,7 @@ import java.util.Objects;
 public class HomeViewModel extends ViewModel {
 
     private final RestaurantRepository mRestaurantRepository;
+    private final FirebaseService mFirebaseService;
     private final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
     private Double latitude = 0.00;
     private Double longitude = 0.00;
@@ -67,10 +59,10 @@ public class HomeViewModel extends ViewModel {
     private List<Marker> mMarkerList = new ArrayList<>();
     private GoogleMap mGoogleMap;
     private Marker mMarker;
-    private Boolean isSomeone = false;
 
-    public HomeViewModel(RestaurantRepository restaurantRepository) {
+    public HomeViewModel(RestaurantRepository restaurantRepository, FirebaseService firebaseService) {
         this.mRestaurantRepository = restaurantRepository;
+        this.mFirebaseService = firebaseService;
     }
 
     /* Google Maps */
@@ -145,9 +137,10 @@ public class HomeViewModel extends ViewModel {
                             for (Restaurant restaurant : responseResult.getRestaurants()) {
                                 latitude = restaurant.getGeocodes().getMain().getLatitude();
                                 longitude = restaurant.getGeocodes().getMain().getLongitude();
+                                LatLng pos = new LatLng(latitude, longitude);
                                 name = restaurant.getName();
                                 id = restaurant.getFsq_id();
-                                addMarkers(map, activity, latitude, longitude, name, id);
+                                addMarkers(map, activity, pos, name, id);
                                 getImgPlace(name, id);
                             }
                         }
@@ -158,33 +151,21 @@ public class HomeViewModel extends ViewModel {
         });
     }
 
-    private void addMarkers(GoogleMap map, Activity activity, Double latitude, Double longitude, String name, String id) {
-        LatLng pos = new LatLng(latitude, longitude);
-        FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-        String currentDate = sdf.format(new Date());
+    private void addMarkers(GoogleMap map, Activity activity, LatLng position, String name, String id) {
 
-        firebaseFirestore.collection("choice").whereEqualTo("date", currentDate).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        mFirebaseService.getUserNumberForRestaurant(id, getEmailUser(), new BaseFirebase() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-                if (value == null) {
-                    return;
-                }
-                for (DocumentChange dc : value.getDocumentChanges()) {
-                    if (dc.getDocument().get("id").equals(id)) {
-                        isSomeone = true;
-                    }
-                }
-                if (isSomeone) {
+            public void getUserNumberForRestaurant(int size) {
+                super.getUserNumberForRestaurant(size);
+                if (size > 0) {
                     mMarker = map.addMarker(new MarkerOptions()
                             .title(name)
-                            .position(pos)
+                            .position(position)
                             .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
-                    isSomeone = false;
                 } else {
                     mMarker = map.addMarker(new MarkerOptions()
                             .title(name)
-                            .position(pos));
+                            .position(position));
                 }
                 if (!mMarkerList.contains(mMarker)) {
                     mMarkerList.add(mMarker);

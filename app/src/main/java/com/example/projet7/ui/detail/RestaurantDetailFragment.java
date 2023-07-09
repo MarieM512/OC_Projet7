@@ -60,7 +60,7 @@ public class RestaurantDetailFragment extends Fragment {
             public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
                 super.getChoiceDataByCurrentDate(hashMap);
                 if (Objects.equals(hashMap.get(viewModel.getEmailUser()), restaurantId)) {
-                    binding.fabRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_check));
+                    binding.fabRestaurant.setImageDrawable(requireContext().getDrawable(R.drawable.ic_check));
                 }
             }
         });
