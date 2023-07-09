@@ -26,17 +26,17 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     private final RecyclerViewInterface mRecyclerViewInterface;
     private FirebaseService mFirebaseService;
 
-    public RestaurantAdapter(Context context, List<Restaurant> restaurantList, RecyclerViewInterface recyclerViewInterface, HomeViewModel viewModel) {
+    public RestaurantAdapter(Context context, List<Restaurant> restaurantList, RecyclerViewInterface recyclerViewInterface, HomeViewModel viewModel, FirebaseService firebaseService) {
         mContext = context;
         mRestaurantList = restaurantList;
         mRecyclerViewInterface = recyclerViewInterface;
         this.viewModel = viewModel;
+        mFirebaseService = firebaseService;
     }
 
     @NonNull
     @Override
     public RestaurantViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        mFirebaseService = FirebaseService.getInstance();
         return new RestaurantViewHolder(LayoutInflater.from(mContext).inflate(R.layout.restaurant_card, parent, false));
     }
 

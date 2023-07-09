@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.util.Log;
 
 import com.example.projet7.model.Choice;
+import com.example.projet7.model.User;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -22,6 +23,7 @@ public class FirebaseService {
     private static volatile FirebaseService INSTANCE = null;
     private static final String TAG = "Firebase Service";
     private ArrayList<Choice> mChoiceArrayList;
+    private ArrayList<User> mUserArrayList;
 
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -112,11 +114,25 @@ public class FirebaseService {
             if (task.isSuccessful()) {
                 int size = 0;
                 for (QueryDocumentSnapshot document: task.getResult()) {
-                    if (document.get("id").equals(id) && !document.get("email").equals(email)) {
+                    if (Objects.equals(document.get("id"), id) && !Objects.equals(document.get("email"), email)) {
                         size++;
                     }
                 }
                 callback.getUserNumberForRestaurant(size);
+            }
+        });
+    }
+
+    public void getAllUserExceptSelf(String email, FirebaseCallback callback) {
+        mUserArrayList = new ArrayList<>();
+        users.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document: task.getResult()) {
+                    if (!Objects.equals(document.get("email"), email)) {
+                        mUserArrayList.add(document.toObject(User.class));
+                    }
+                }
+                callback.getAllUserExceptSelf(mUserArrayList);
             }
         });
     }

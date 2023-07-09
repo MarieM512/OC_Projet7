@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.projet7.databinding.FragmentListViewBinding;
+import com.example.projet7.firebase.FirebaseService;
 import com.example.projet7.model.Restaurant;
 import com.example.projet7.ui.restaurant.RecyclerViewInterface;
 import com.example.projet7.ui.restaurant.RestaurantAdapter;
@@ -24,6 +25,7 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
 
     private FragmentListViewBinding binding;
     private HomeViewModel viewModel;
+    private FirebaseService mFirebaseService;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
         binding = FragmentListViewBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
         viewModel = new ViewModelProvider(getActivity(), getDefaultViewModelProviderFactory()).get(HomeViewModel.class);
+        mFirebaseService = FirebaseService.getInstance();
 
         if (viewModel.getRestaurants() == null) {
             binding.tvEmpty.setVisibility(View.VISIBLE);
@@ -45,7 +48,7 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
             binding.tvEmpty.setVisibility(View.GONE);
             binding.rvRestaurant.setVisibility(View.VISIBLE);
             binding.rvRestaurant.setLayoutManager(new LinearLayoutManager(requireContext()));
-            binding.rvRestaurant.setAdapter(new RestaurantAdapter(getActivity().getApplicationContext(), restaurants, this, viewModel));
+            binding.rvRestaurant.setAdapter(new RestaurantAdapter(getActivity().getApplicationContext(), restaurants, this, viewModel, mFirebaseService));
         }
         return view;
     }
