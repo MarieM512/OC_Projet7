@@ -1,7 +1,6 @@
 package com.example.projet7;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -9,34 +8,30 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.projet7.data.OkhttpService;
 import com.example.projet7.databinding.FragmentMapViewBinding;
-import com.example.projet7.databinding.FragmentRestaurantDetailBinding;
+import com.example.projet7.ui.viewmodel.HomeViewModel;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 
 public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
     private GoogleMap map;
     private HomeViewModel viewModel;
     private FragmentMapViewBinding binding;
     String permission = Manifest.permission.ACCESS_FINE_LOCATION;
-    private OkhttpService mOkhttpService = OkhttpService.getInstance();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,8 +46,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
 
         SupportMapFragment supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.myMap);
         supportMapFragment.getMapAsync(this);
-        viewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        mOkhttpService.setActivity(requireActivity());
+        viewModel = new ViewModelProvider(getActivity(), getDefaultViewModelProviderFactory()).get(HomeViewModel.class);
 
         binding.fabLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +73,7 @@ public class MapViewFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onActivityResult(Boolean isGranted) {
                     if (isGranted) {
-                        viewModel.getCurrentLocation(requireContext(), map);
+                        viewModel.getCurrentLocation(requireContext(), requireActivity(), map);
                     } else {
                         Log.d("Permission", "permission denied");
                     }

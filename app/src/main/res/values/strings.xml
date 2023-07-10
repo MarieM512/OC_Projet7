@@ -1,22 +1,12 @@
 <resources>
-    <string name="app_name">Go 4 Lunch</string>
-    <string name="app_name_without_space">Go4Lunch</string>
+    <string name="app_name" translatable="false">Go 4 Lunch</string>
+    <string name="app_name_without_space" translatable="false">Go4Lunch</string>
 
     <!-- Connection -->
     <string name="login_facebook">Sign in with Facebook</string>
     <string name="login_google">Sign in with Google</string>
     <string name="login_mail">Sign in with Mail</string>
     <string name="login_Twitter">Sign in with Twitter</string>
-
-    <!-- ID -->
-    <string name="default_web_client_id">880581493208-hurqlvhtjiafesi997hkn6f53ajoail8.apps.googleusercontent.com</string>
-    <string name="facebook_application_id">974965846857226</string>
-    <string name="fb_login_protocol_scheme">fb974965846857226</string>
-    <string name="facebook_client_token">343b043ccfc8383e7a915da4698b8df8</string>
-    <string name="twitter_api">eEhWi7tfLEAf0ngmFK8nxbEnX</string>
-    <string name="twitter_api_secret">f8cD2YO8oyAIS8swLYWrUZlJ7addUzs9bNgj7Zh2QZtyUO3ssl</string>
-    <string name="twitter_client">NnJJTnU0VHdkZ0RCM1gxYTRSUUM6MTpjaQ</string>
-    <string name="twitter_client_secret">9vuEIF6ydAmdQErEBOl3uwOybJBotaqH_76_A5dDE_G5GXLxMS</string>
 
     <!-- Navigation -->
     <string name="map_view">Map View</string>
@@ -34,9 +24,21 @@
     <string name="parameter_notifications_message">Permit to send you a notifications at 12 PM to inform you which restaurant you have chosen with his address and the list of your colleges who will join you.</string>
 
     <!-- Drawer -->
-    <string name="nav_open">Open</string>
-    <string name="nav_close">Close</string>
+    <string name="nav_open" translatable="false">Open</string>
+    <string name="nav_close" translatable="false">Close</string>
 
     <!-- Toast -->
     <string name="message_no_lunch_selected">You didn\'t choose where to eat</string>
+
+    <!-- Notification -->
+    <string name="notif_title">It\'s time to go eat at</string>
+    <string name="notif_body_start">Go to</string>
+    <string name="notif_body_middle">to join</string>
+    <string name="channel_name" translatable="false">Head</string>
+    <string name="channel_description" translatable="false">Info</string>
+
+    <!-- Workmates -->
+    <string name="detail_join">is joining!</string>
+    <string name="list_no_choice">hasn\'t decided yet</string>
+    <string name="list_choice">is eating</string>
 </resources>

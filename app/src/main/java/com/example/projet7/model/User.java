@@ -4,41 +4,36 @@ import java.util.List;
 
 public class User {
 
-    String photo;
+    String image;
     String name;
-    String idChoice;
-    String nameChoice;
-    String typeChoice;
-    String addressChoice;
-    String imageChoice;
+    String email;
+    Boolean notification;
     List<String> favorite;
 
     public User(){}
 
-    public User(String photo, String name, String idChoice, String nameChoice, String typeChoice, String addressChoice, String imageChoice) {
-        this.photo = photo;
+    public User(String image, String name, String email, Boolean notification, List<String> favorite) {
+        this.image = image;
         this.name = name;
-        this.idChoice = idChoice;
-        this.nameChoice = nameChoice;
-        this.typeChoice = typeChoice;
-        this.addressChoice = addressChoice;
-        this.imageChoice = imageChoice;
+        this.email = email;
+        this.notification = notification;
+        this.favorite = favorite;
     }
 
-    public String getIdChoice() {
-        return idChoice;
+    public String getEmail() {
+        return email;
     }
 
-    public void setIdChoice(String idChoice) {
-        this.idChoice = idChoice;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getPhoto() {
-        return photo;
+    public String getImage() {
+        return image;
     }
 
-    public void setPhoto(String photo) {
-        this.photo = photo;
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public String getName() {
@@ -49,36 +44,12 @@ public class User {
         this.name = name;
     }
 
-    public String getNameChoice() {
-        return nameChoice;
+    public Boolean getNotification() {
+        return notification;
     }
 
-    public void setNameChoice(String nameChoice) {
-        this.nameChoice = nameChoice;
-    }
-
-    public String getTypeChoice() {
-        return typeChoice;
-    }
-
-    public void setTypeChoice(String typeChoice) {
-        this.typeChoice = typeChoice;
-    }
-
-    public String getAddressChoice() {
-        return addressChoice;
-    }
-
-    public void setAddressChoice(String addressChoice) {
-        this.addressChoice = addressChoice;
-    }
-
-    public String getImageChoice() {
-        return imageChoice;
-    }
-
-    public void setImageChoice(String imageChoice) {
-        this.imageChoice = imageChoice;
+    public void setNotification(Boolean notification) {
+        this.notification = notification;
     }
 
     public List<String> getFavorite() {

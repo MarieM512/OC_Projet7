@@ -3,6 +3,10 @@ plugins {
     id 'com.google.gms.google-services'
 }
 
+def localPropertiesFile = rootProject.file("local.properties")
+def localProperties = new Properties()
+localProperties.load(new FileInputStream(localPropertiesFile))
+
 android {
     namespace 'com.example.projet7'
     compileSdk 33
@@ -15,11 +19,20 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders = [googleMapsApiKey: localProperties['googleMapsApiKey']]
+        resValue "string", "facebook_application_id", localProperties['facebook_application_id']
+        resValue "string", "facebook_client_token", localProperties['facebook_client_token']
+        resValue "string", "fb_login_protocol_scheme", localProperties['fb_login_protocol_scheme']
+        resValue "string", "twitter_api", localProperties['twitter_api']
+        resValue "string", "twitter_api_secret", localProperties['twitter_api_secret']
+        resValue "string", "twitter_client", localProperties['twitter_client']
+        resValue "string", "twitter_client_secret", localProperties['twitter_client_secret']
     }
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -52,6 +65,7 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:7.2.0'
     implementation 'androidx.work:work-runtime:2.8.1'
     implementation 'com.google.firebase:firebase-firestore:24.6.1'
+    implementation 'com.google.firebase:firebase-messaging:23.1.2'
 
     // Google
     implementation 'com.google.android.gms:play-services-auth:20.5.0'

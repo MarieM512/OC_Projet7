@@ -1,4 +1,4 @@
-package com.example.projet7;
+package com.example.projet7.ui.restaurant;
 
 import android.view.View;
 import android.widget.ImageView;
@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.projet7.R;
 
 import org.w3c.dom.Text;
 
