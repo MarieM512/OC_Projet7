@@ -7,11 +7,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface FirebaseCallback {
-    void getUserDatabaseById(HashMap<String, Object> hashMap);
-    void getChoiceDataByCurrentDate(HashMap<String, String> hashMap);
-    void getUserIsEating(ArrayList<Choice> choiceArrayList);
-    void getUserNumberForRestaurant(int size);
-    void getAllUserExceptSelf(ArrayList<User> userArrayList);
-    void getIdChoiceOfUser(String id);
-    void getInfoChoice(HashMap<String, String> hashMap);
+    void getHashMapStringObject(HashMap<String, Object> hashMap);
+    void getHashMapStringString(HashMap<String, String> hashMap);
+    void getArrayListChoice(ArrayList<Choice> choiceArrayList);
+    void getSize(int size);
+    void getArrayListUser(ArrayList<User> userArrayList);
+    void getId(String id);
 }

@@ -44,14 +44,14 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> 
     public void onBindViewHolder(@NonNull WorkmatesViewHolder holder, int position) {
         User user = mUserArrayList.get(position);
 
-        mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
+        mFirebaseService.getChoiceUserLive(new BaseFirebase() {
             @Override
-            public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
-                super.getChoiceDataByCurrentDate(hashMap);
-                if (!Objects.equals(hashMap.get(user.getEmail()), null)) {
+            public void getHashMapStringString(HashMap<String, String> hashMap) {
+                super.getHashMapStringString(hashMap);
+                if (hashMap.containsKey(user.getEmail()) && !Objects.equals(hashMap.get(user.getEmail()), "")) {
                     String id = hashMap.get(user.getEmail());
-                    String type = viewModel.getLunch(id).get("type");
-                    String name = viewModel.getLunch(id).get("name");
+                    String type = viewModel.getLunchById(id).get("type");
+                    String name = viewModel.getLunchById(id).get("name");
                     information = user.getName() + " " + mContext.getString(R.string.list_choice) + " " + type + " (" + name + ")";
                     holder.detail.setEnabled(true);
                     holder.detail.setTypeface(Typeface.DEFAULT);

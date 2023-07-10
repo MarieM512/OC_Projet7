@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -57,11 +56,11 @@ public class HomeViewModel extends ViewModel {
     private Double latitude = 0.00;
     private Double longitude = 0.00;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    Handler mainHandler = new Handler(Looper.getMainLooper());
-    private List<Marker> mMarkerList = new ArrayList<>();
+    private final Handler mainHandler = new Handler(Looper.getMainLooper());
+    private final List<Marker> mMarkerList = new ArrayList<>();
     private GoogleMap mGoogleMap;
     private Marker mMarker;
-    private static String TAG = "Home ViewModel";
+    private static final String TAG = "Home ViewModel";
 
     public HomeViewModel(RestaurantRepository restaurantRepository, FirebaseService firebaseService) {
         this.mRestaurantRepository = restaurantRepository;
@@ -158,8 +157,8 @@ public class HomeViewModel extends ViewModel {
 
         mFirebaseService.getUserNumberForRestaurant(id, getEmailUser(), new BaseFirebase() {
             @Override
-            public void getUserNumberForRestaurant(int size) {
-                super.getUserNumberForRestaurant(size);
+            public void getSize(int size) {
+                super.getSize(size);
                 if (size > 0) {
                     mMarker = map.addMarker(new MarkerOptions()
                             .title(name)
@@ -182,13 +181,7 @@ public class HomeViewModel extends ViewModel {
                 String positionString = marker.getId().substring(1);
                 Integer position = Integer.parseInt(positionString);
                 NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
-                Bundle bundle = new Bundle();
-                bundle.putString("id", getId(position));
-                bundle.putString("name", getName(position));
-                bundle.putString("type", getType(position));
-                bundle.putString("address", getAddress(position));
-                bundle.putString("image", getImgDetail(position));
-                navController.navigate(R.id.action_nav_map_to_nav_detail, bundle);
+                goToRestaurantById(navController, true, position);
                 return false;
             }
         });
@@ -266,7 +259,9 @@ public class HomeViewModel extends ViewModel {
         return mRestaurantRepository.getImgRV(getName(position));
     }
 
-    public HashMap<String, String> getLunch(String id) {
+    /* Refactor */
+
+    public HashMap<String, String> getLunchById(String id) {
         HashMap<String, String> lunch = new HashMap<>();
         for (Restaurant restaurant : getRestaurants()) {
             if (restaurant.getFsq_id().equals(id)) {
@@ -278,5 +273,39 @@ public class HomeViewModel extends ViewModel {
             }
         }
         return lunch;
+    }
+
+    public HashMap<String, String> getLunchByName(String name) {
+        HashMap<String, String> lunch = new HashMap<>();
+        for (Restaurant restaurant : getRestaurants()) {
+            if (restaurant.getName().equals(name)) {
+                lunch.put("id", restaurant.getFsq_id());
+                lunch.put("type", restaurant.getCategories().get(0).getName());
+                lunch.put("address", restaurant.getLocation().getAddress());
+                lunch.put("image", mRestaurantRepository.getImgDetail(restaurant.getName()));
+                break;
+            }
+        }
+        return lunch;
+    }
+
+    public void goToRestaurantById(NavController navController, Boolean byPosition, Object idPosition) {
+        Bundle bundle = new Bundle();
+        if (byPosition) {
+            int position = (Integer) idPosition;
+            bundle.putString("id", getId(position));
+            bundle.putString("name", getName(position));
+            bundle.putString("type", getType(position));
+            bundle.putString("address", getAddress(position));
+            bundle.putString("image", getImgDetail(position));
+        } else {
+            String id = (String) idPosition;
+            bundle.putString("id", id);
+            bundle.putString("name", getLunchById(id).get("name"));
+            bundle.putString("type", getLunchById(id).get("type"));
+            bundle.putString("address", getLunchById(id).get("address"));
+            bundle.putString("image", getLunchById(id).get("image"));
+        }
+        navController.navigate(R.id.nav_detail, bundle);
     }
 }

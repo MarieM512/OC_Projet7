@@ -45,8 +45,8 @@ public class WorkmatesFragment extends Fragment {
         mFirebaseService.getAllUserExceptSelf(viewModel.getEmailUser(), new BaseFirebase() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void getAllUserExceptSelf(ArrayList<User> userArrayList) {
-                super.getAllUserExceptSelf(userArrayList);
+            public void getArrayListUser(ArrayList<User> userArrayList) {
+                super.getArrayListUser(userArrayList);
                 mAdapter = new WorkmatesAdapter(requireContext(), userArrayList, viewModel, mFirebaseService);
                 binding.rvWorkmates.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();

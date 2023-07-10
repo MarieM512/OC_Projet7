@@ -8,37 +8,32 @@ import java.util.HashMap;
 
 public abstract class BaseFirebase implements FirebaseCallback {
     @Override
-    public void getUserDatabaseById(HashMap<String, Object> hashMap) {
+    public void getHashMapStringObject(HashMap<String, Object> hashMap) {
 
     }
 
     @Override
-    public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
+    public void getHashMapStringString(HashMap<String, String> hashMap) {
 
     }
 
     @Override
-    public void getUserIsEating(ArrayList<Choice> choiceArrayList) {
+    public void getArrayListChoice(ArrayList<Choice> choiceArrayList) {
 
     }
 
     @Override
-    public void getUserNumberForRestaurant(int size) {
+    public void getSize(int size) {
 
     }
 
     @Override
-    public void getAllUserExceptSelf(ArrayList<User> userArrayList) {
+    public void getArrayListUser(ArrayList<User> userArrayList) {
 
     }
 
     @Override
-    public void getIdChoiceOfUser(String id) {
-
-    }
-
-    @Override
-    public void getInfoChoice(HashMap<String, String> hashMap) {
+    public void getId(String id) {
 
     }
 }

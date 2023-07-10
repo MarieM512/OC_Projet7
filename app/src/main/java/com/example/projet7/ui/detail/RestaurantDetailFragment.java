@@ -1,6 +1,7 @@
 package com.example.projet7.ui.detail;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ public class RestaurantDetailFragment extends Fragment {
     private FirebaseService mFirebaseService;
     private DetailAdapter mAdapter;
     private String restaurantId;
+    private Context mContext;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,10 +45,11 @@ public class RestaurantDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         binding = FragmentRestaurantDetailBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
+        mContext = requireContext();
 
         mFirebaseService = FirebaseService.getInstance();
         viewModel = new ViewModelProvider(requireActivity(), getDefaultViewModelProviderFactory()).get(HomeViewModel.class);
-        binding.rvDetailWorkmates.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvDetailWorkmates.setLayoutManager(new LinearLayoutManager(mContext));
 
         restaurantId = getArguments().getString("id");
         String restaurantName = getArguments().getString("name");
@@ -57,21 +60,20 @@ public class RestaurantDetailFragment extends Fragment {
         mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
             @SuppressLint("UseCompatLoadingForDrawables")
             @Override
-            public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
-                super.getChoiceDataByCurrentDate(hashMap);
+            public void getHashMapStringString(HashMap<String, String> hashMap) {
+                super.getHashMapStringString(hashMap);
                 if (Objects.equals(hashMap.get(viewModel.getEmailUser()), restaurantId)) {
-                    binding.fabRestaurant.setImageDrawable(requireContext().getDrawable(R.drawable.ic_check));
+                    binding.fabRestaurant.setImageDrawable(mContext.getDrawable(R.drawable.ic_check));
                 }
             }
         });
 
-        mFirebaseService.getUserIsEating(viewModel.getEmailUser(), restaurantId, new BaseFirebase() {
+        mFirebaseService.getUserIsEatingLive(viewModel.getEmailUser(), restaurantId, new BaseFirebase() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
-            public void getUserIsEating(ArrayList<Choice> choiceArrayList) {
-                super.getUserIsEating(choiceArrayList);
-
-                mAdapter = new DetailAdapter(requireContext(), choiceArrayList, mFirebaseService);
+            public void getArrayListChoice(ArrayList<Choice> choiceArrayList) {
+                super.getArrayListChoice(choiceArrayList);
+                mAdapter = new DetailAdapter(mContext, choiceArrayList, mFirebaseService);
                 binding.rvDetailWorkmates.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
                 if (!choiceArrayList.isEmpty()) {
@@ -87,7 +89,7 @@ public class RestaurantDetailFragment extends Fragment {
         binding.name.setText(restaurantName);
         binding.type.setText(restaurantType);
         binding.address.setText(restaurantAddress);
-        Glide.with(requireContext()).load(restaurantImage).centerCrop().into(binding.image);
+        Glide.with(mContext).load(restaurantImage).centerCrop().into(binding.image);
         favorite(false);
         binding.like.setOnClickListener(v -> favorite(true));
 
@@ -97,8 +99,8 @@ public class RestaurantDetailFragment extends Fragment {
                 mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
                     @SuppressLint("UseCompatLoadingForDrawables")
                     @Override
-                    public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
-                        super.getChoiceDataByCurrentDate(hashMap);
+                    public void getHashMapStringString(HashMap<String, String> hashMap) {
+                        super.getHashMapStringString(hashMap);
                         if (Objects.equals(hashMap.get(viewModel.getEmailUser()), restaurantId)) {
                             mFirebaseService.setChoiceId(viewModel.getEmailUser(), "");
                             binding.fabRestaurant.setImageDrawable(getResources().getDrawable(R.drawable.ic_restaurant));
@@ -117,8 +119,8 @@ public class RestaurantDetailFragment extends Fragment {
     private void favorite(Boolean tapped) {
         mFirebaseService.getUserDatabaseById(viewModel.getEmailUser(), new BaseFirebase() {
             @Override
-            public void getUserDatabaseById(HashMap<String, Object> hashMap) {
-                super.getUserDatabaseById(hashMap);
+            public void getHashMapStringObject(HashMap<String, Object> hashMap) {
+                super.getHashMapStringObject(hashMap);
                 if (((List<?>) Objects.requireNonNull(hashMap.get("favorite"))).contains(restaurantId)) {
                     if (tapped) {
                         binding.favoriteSymbol.setVisibility(View.GONE);

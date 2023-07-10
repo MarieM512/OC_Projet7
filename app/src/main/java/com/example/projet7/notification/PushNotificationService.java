@@ -44,26 +44,26 @@ public class PushNotificationService extends FirebaseMessagingService {
 
             mFirebaseService.getUserDatabaseById(user.getEmail(), new BaseFirebase() {
                 @Override
-                public void getUserDatabaseById(HashMap<String, Object> hashMap) {
-                    super.getUserDatabaseById(hashMap);
+                public void getHashMapStringObject(HashMap<String, Object> hashMap) {
+                    super.getHashMapStringObject(hashMap);
                     if (Objects.equals(hashMap.get("notification"), true)) {
                         mFirebaseService.getIdChoiceOfUser(user.getEmail(), new BaseFirebase() {
                             @Override
-                            public void getIdChoiceOfUser(String id) {
-                                super.getIdChoiceOfUser(id);
+                            public void getId(String id) {
+                                super.getId(id);
                                 if (!id.isEmpty()) {
                                     mFirebaseService.getInfoChoice(id, new BaseFirebase() {
                                         @Override
-                                        public void getInfoChoice(HashMap<String, String> hashMap) {
-                                            super.getInfoChoice(hashMap);
+                                        public void getHashMapStringString(HashMap<String, String> hashMap) {
+                                            super.getHashMapStringString(hashMap);
                                             name = hashMap.get("name");
                                             address = hashMap.get("address");
                                         }
                                     });
                                     mFirebaseService.getUserIsEating(user.getEmail(), id, new BaseFirebase() {
                                         @Override
-                                        public void getUserIsEating(ArrayList<Choice> choiceArrayList) {
-                                            super.getUserIsEating(choiceArrayList);
+                                        public void getArrayListChoice(ArrayList<Choice> choiceArrayList) {
+                                            super.getArrayListChoice(choiceArrayList);
                                             size = choiceArrayList.size();
                                             if (size == 0) {
                                                 workmates = String.join(", ", workmatesList);
@@ -72,8 +72,8 @@ public class PushNotificationService extends FirebaseMessagingService {
                                             for (Choice choice: choiceArrayList) {
                                                 mFirebaseService.getUserDatabaseById(choice.getEmail(), new BaseFirebase() {
                                                     @Override
-                                                    public void getUserDatabaseById(HashMap<String, Object> hashMap) {
-                                                        super.getUserDatabaseById(hashMap);
+                                                    public void getHashMapStringObject(HashMap<String, Object> hashMap) {
+                                                        super.getHashMapStringObject(hashMap);
                                                         workmatesList.add(Objects.requireNonNull(hashMap.get("name")).toString());
                                                         size--;
                                                         if (size == 0) {

@@ -14,7 +14,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -42,7 +41,6 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
     private ActivityHomeBinding binding;
     private HomeViewModel viewModel;
-    private NavHostFragment mNavHostFragment;
     private NavController mNavController;
     private ArrayList<String> restaurantName;
     private Boolean exist = false;
@@ -58,8 +56,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         setSupportActionBar(binding.toolbar);
         restaurantName = new ArrayList<>();
 
-        mNavHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
-        mNavController = mNavHostFragment.getNavController();
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.nav_host_fragment);
+        mNavController = navHostFragment.getNavController();
         NavigationUI.setupWithNavController(binding.navigationBar, mNavController);
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.nav_map, R.id.nav_list, R.id.nav_workmates).setOpenableLayout(binding.drawer).build();
         NavigationUI.setupWithNavController(binding.toolbar, mNavController, appBarConfiguration);
@@ -100,17 +98,11 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
         if (item.getItemId() == R.id.nav_lunch) {
             mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
                 @Override
-                public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
-                    super.getChoiceDataByCurrentDate(hashMap);
+                public void getHashMapStringString(HashMap<String, String> hashMap) {
+                    super.getHashMapStringString(hashMap);
                     if (!Objects.equals(hashMap.get(viewModel.getEmailUser()), "")) {
-                        Bundle bundle = new Bundle();
                         String id = hashMap.get(viewModel.getEmailUser());
-                        bundle.putString("id", id);
-                        bundle.putString("name", viewModel.getLunch(id).get("name"));
-                        bundle.putString("type", viewModel.getLunch(id).get("type"));
-                        bundle.putString("address", viewModel.getLunch(id).get("address"));
-                        bundle.putString("image", viewModel.getLunch(id).get("image"));
-                        mNavController.navigate(R.id.nav_detail, bundle);
+                        viewModel.goToRestaurantById(mNavController, false, id);
                         binding.drawer.closeDrawer(GravityCompat.START);
                     } else {
                         Toast.makeText(getBaseContext(), getString(R.string.message_no_lunch_selected), Toast.LENGTH_SHORT).show();
@@ -158,13 +150,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if (mNavController.getCurrentDestination().getDisplayName().endsWith("nav_map")) {
                     viewModel.getMarker(queryString);
                 } else {
-                    Bundle bundle = new Bundle();
-                    bundle.putString("id", viewModel.getId(position));
-                    bundle.putString("name", viewModel.getName(position));
-                    bundle.putString("type", viewModel.getType(position));
-                    bundle.putString("address", viewModel.getAddress(position));
-                    bundle.putString("image", viewModel.getImgDetail(position));
-                    mNavController.navigate(R.id.action_nav_list_to_nav_detail, bundle);
+                    viewModel.goToRestaurantById(mNavController, false, viewModel.getLunchByName(queryString).get("id"));
                 }
                 searchView.setQuery("", false);
                 searchView.setIconified(true);
@@ -179,8 +165,8 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
 
         mFirebaseService.getChoiceDataByCurrentDate(viewModel, new BaseFirebase() {
             @Override
-            public void getChoiceDataByCurrentDate(HashMap<String, String> hashMap) {
-                super.getChoiceDataByCurrentDate(hashMap);
+            public void getHashMapStringString(HashMap<String, String> hashMap) {
+                super.getHashMapStringString(hashMap);
                 for (String email: hashMap.keySet()) {
                     if (email.equals(viewModel.getEmailUser())) {
                         exist = true;

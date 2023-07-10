@@ -38,8 +38,8 @@ public class ParameterFragment extends Fragment {
 
         firebaseService.getUserDatabaseById(viewModel.getEmailUser(), new BaseFirebase() {
             @Override
-            public void getUserDatabaseById(HashMap<String, Object> hashMap) {
-                super.getUserDatabaseById(hashMap);
+            public void getHashMapStringObject(HashMap<String, Object> hashMap) {
+                super.getHashMapStringObject(hashMap);
                 Boolean notification = (Boolean) hashMap.get("notification");
                 binding.notificationSwitch.setChecked(Boolean.TRUE.equals(notification));
             }

@@ -60,7 +60,7 @@ public class FirebaseService {
                 user.put("image", image);
                 user.put("notification", task.getResult().get("notification"));
                 user.put("favorite", task.getResult().get("favorite"));
-                callback.getUserDatabaseById(user);
+                callback.getHashMapStringObject(user);
             }
         });
     }
@@ -73,7 +73,7 @@ public class FirebaseService {
                 for (QueryDocumentSnapshot document: task.getResult()) {
                     currentChoice.put(Objects.requireNonNull(document.get("email")).toString(), Objects.requireNonNull(document.get("id")).toString());
                 }
-                callback.getChoiceDataByCurrentDate(currentChoice);
+                callback.getHashMapStringString(currentChoice);
             }
         });
     }
@@ -112,22 +112,38 @@ public class FirebaseService {
                         mChoiceArrayList.add(document.toObject(Choice.class));
                     }
                 }
-                callback.getUserIsEating(mChoiceArrayList);
+                callback.getArrayListChoice(mChoiceArrayList);
             }
         });
     }
 
-    public void getUserNumberForRestaurant(String id, String email, FirebaseCallback callback) {
-        choice.whereEqualTo("date", currentDate).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                int size = 0;
-                for (QueryDocumentSnapshot document: task.getResult()) {
-                    if (Objects.equals(document.get("id"), id) && !Objects.equals(document.get("email"), email)) {
-                        size++;
-                    }
-                }
-                callback.getUserNumberForRestaurant(size);
+    public void getUserIsEatingLive(String email, String id, FirebaseCallback callback) {
+        choice.whereEqualTo("date", currentDate).addSnapshotListener((value, error) -> {
+            if (value == null) {
+                return;
             }
+            mChoiceArrayList = new ArrayList<>();
+            for (QueryDocumentSnapshot document: value) {
+                if (Objects.equals(document.get("id"), id) && !Objects.equals(document.get("email"), email)) {
+                    mChoiceArrayList.add(document.toObject(Choice.class));
+                }
+            }
+            callback.getArrayListChoice(mChoiceArrayList);
+        });
+    }
+
+    public void getUserNumberForRestaurant(String id, String email, FirebaseCallback callback) {
+        choice.whereEqualTo("date", currentDate).addSnapshotListener((value, error) -> {
+            if (value == null) {
+                return;
+            }
+            int size = 0;
+            for (QueryDocumentSnapshot document: value) {
+                if (Objects.equals(document.get("id"), id) && !Objects.equals(document.get("email"), email)) {
+                    size++;
+                }
+            }
+            callback.getSize(size);
         });
     }
 
@@ -140,7 +156,7 @@ public class FirebaseService {
                         mUserArrayList.add(document.toObject(User.class));
                     }
                 }
-                callback.getAllUserExceptSelf(mUserArrayList);
+                callback.getArrayListUser(mUserArrayList);
             }
         });
     }
@@ -175,7 +191,7 @@ public class FirebaseService {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document: task.getResult()) {
                     if (Objects.equals(document.get("email"), email)) {
-                        callback.getIdChoiceOfUser(Objects.requireNonNull(document.get("id")).toString());
+                        callback.getId(Objects.requireNonNull(document.get("id")).toString());
                     }
                 }
             }
@@ -184,9 +200,22 @@ public class FirebaseService {
 
     public void getInfoChoice(String id, FirebaseCallback callback) {
         HashMap<String, String> info = new HashMap<>();
-        info.put("name", viewModel.getLunch(id).get("name"));
-        info.put("address", viewModel.getLunch(id).get("address"));
-        callback.getInfoChoice(info);
+        info.put("name", viewModel.getLunchById(id).get("name"));
+        info.put("address", viewModel.getLunchById(id).get("address"));
+        callback.getHashMapStringString(info);
+    }
+
+    public void getChoiceUserLive(FirebaseCallback callback) {
+        HashMap<String, String> currentChoice = new HashMap<>();
+        choice.whereEqualTo("date", currentDate).addSnapshotListener((value, error) -> {
+            if (value == null) {
+                return;
+            }
+            for (QueryDocumentSnapshot document: value) {
+                currentChoice.put(Objects.requireNonNull(document.get("email")).toString(), Objects.requireNonNull(document.get("id")).toString());
+            }
+            callback.getHashMapStringString(currentChoice);
+        });
     }
 
     private void setNewUser(HashMap<String, Object> user) {

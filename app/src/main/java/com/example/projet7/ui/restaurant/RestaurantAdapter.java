@@ -24,7 +24,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     private final List<Restaurant> mRestaurantList;
     private final HomeViewModel viewModel;
     private final RecyclerViewInterface mRecyclerViewInterface;
-    private FirebaseService mFirebaseService;
+    private final FirebaseService mFirebaseService;
 
     public RestaurantAdapter(Context context, List<Restaurant> restaurantList, RecyclerViewInterface recyclerViewInterface, HomeViewModel viewModel, FirebaseService firebaseService) {
         mContext = context;
@@ -46,11 +46,13 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
 
         mFirebaseService.getUserNumberForRestaurant(viewModel.getId(position), viewModel.getEmailUser(), new BaseFirebase() {
             @Override
-            public void getUserNumberForRestaurant(int size) {
-                super.getUserNumberForRestaurant(size);
+            public void getSize(int size) {
+                super.getSize(size);
                 if (size > 0) {
                     holder.reserved.setVisibility(View.VISIBLE);
                     holder.reserved.setText("(" + size + ")");
+                } else {
+                    holder.reserved.setVisibility(View.INVISIBLE);
                 }
             }
         });

@@ -44,8 +44,8 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
 
         mFirebaseService.getUserDatabaseById(choice.getEmail(), new BaseFirebase() {
             @Override
-            public void getUserDatabaseById(HashMap<String, Object> hashMap) {
-                super.getUserDatabaseById(hashMap);
+            public void getHashMapStringObject(HashMap<String, Object> hashMap) {
+                super.getHashMapStringObject(hashMap);
                 String name = Objects.requireNonNull(hashMap.get("name")).toString();
                 String image = Objects.requireNonNull(hashMap.get("image")).toString();
                 holder.detail.setText(name + " " + mContext.getString(R.string.detail_join));
