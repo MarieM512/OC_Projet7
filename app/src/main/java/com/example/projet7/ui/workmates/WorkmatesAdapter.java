@@ -3,9 +3,11 @@ package com.example.projet7.ui.workmates;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -25,13 +27,15 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> 
     private final ArrayList<User> mUserArrayList;
     private final HomeViewModel viewModel;
     private final FirebaseService mFirebaseService;
+    private final NavController mNavController;
     private String information;
 
-    public WorkmatesAdapter(Context context, ArrayList<User> userArrayList, HomeViewModel viewModel, FirebaseService firebaseService) {
+    public WorkmatesAdapter(Context context, ArrayList<User> userArrayList, HomeViewModel viewModel, FirebaseService firebaseService, NavController navController) {
         mContext = context;
         mUserArrayList = userArrayList;
         this.viewModel = viewModel;
         mFirebaseService = firebaseService;
+        mNavController = navController;
     }
 
     @NonNull
@@ -55,6 +59,12 @@ public class WorkmatesAdapter extends RecyclerView.Adapter<WorkmatesViewHolder> 
                     information = user.getName() + " " + mContext.getString(R.string.list_choice) + " " + type + " (" + name + ")";
                     holder.detail.setEnabled(true);
                     holder.detail.setTypeface(Typeface.DEFAULT);
+                    holder.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            viewModel.goToRestaurantById(mNavController, false, id);
+                        }
+                    });
                 } else {
                     information = user.getName() + " " + mContext.getString(R.string.list_no_choice);
                     holder.detail.setEnabled(false);

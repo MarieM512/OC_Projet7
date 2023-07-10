@@ -6,12 +6,15 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.projet7.R;
 import com.example.projet7.databinding.FragmentWorkmatesBinding;
 import com.example.projet7.firebase.BaseFirebase;
 import com.example.projet7.firebase.FirebaseService;
@@ -42,12 +45,13 @@ public class WorkmatesFragment extends Fragment {
         mFirebaseService = FirebaseService.getInstance();
 
         binding.rvWorkmates.setLayoutManager(new LinearLayoutManager(requireContext()));
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
         mFirebaseService.getAllUserExceptSelf(viewModel.getEmailUser(), new BaseFirebase() {
             @SuppressLint("NotifyDataSetChanged")
             @Override
             public void getArrayListUser(ArrayList<User> userArrayList) {
                 super.getArrayListUser(userArrayList);
-                mAdapter = new WorkmatesAdapter(requireContext(), userArrayList, viewModel, mFirebaseService);
+                mAdapter = new WorkmatesAdapter(requireContext(), userArrayList, viewModel, mFirebaseService, navController);
                 binding.rvWorkmates.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
             }
