@@ -52,13 +52,6 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
         } else {
             Glide.with(mContext).load(image).centerCrop().into(holder.image);
         }
-//        mFirebaseService.getUserDatabaseById(choice.getEmail(), new BaseFirebase() {
-//            @Override
-//            public void getHashMapStringObject(HashMap<String, Object> hashMap) {
-//                super.getHashMapStringObject(hashMap);
-//
-//            }
-//        });
     }
 
     @Override
