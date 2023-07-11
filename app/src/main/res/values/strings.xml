@@ -41,4 +41,9 @@
     <string name="detail_join">is joining!</string>
     <string name="list_no_choice">hasn\'t decided yet</string>
     <string name="list_choice">is eating</string>
+
+    <!-- Restaurant Detail -->
+    <string name="call">CALL</string>
+    <string name="like">LIKE</string>
+    <string name="website">WEBSITE</string>
 </resources>
