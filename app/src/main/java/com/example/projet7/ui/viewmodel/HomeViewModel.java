@@ -142,8 +142,8 @@ public class HomeViewModel extends ViewModel {
                                 LatLng pos = new LatLng(latitude, longitude);
                                 name = restaurant.getName();
                                 id = restaurant.getFsq_id();
-                                addMarkers(map, activity, pos, name, id);
                                 getImgPlace(name, id);
+                                addMarkers(map, activity, pos, name, id);
                             }
                         }
 

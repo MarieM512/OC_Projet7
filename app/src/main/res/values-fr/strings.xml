@@ -24,4 +24,7 @@
     <string name="detail_join">vous rejoint!</string>
     <string name="list_no_choice">n\'a pas encore décidé</string>
     <string name="list_choice">mange</string>
+    <string name="call">APPELER</string>
+    <string name="like">AIMER</string>
+    <string name="website">SITE WEB</string>
 </resources>

@@ -22,10 +22,11 @@ import java.util.Objects;
 public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
 
     private final Context mContext;
-    private final ArrayList<Choice> mChoiceArrayList;
+
+    private final ArrayList<HashMap<String,Object>> mChoiceArrayList;
     private final FirebaseService mFirebaseService;
 
-    public DetailAdapter(Context context, ArrayList<Choice> userArrayList, FirebaseService firebaseService) {
+    public DetailAdapter(Context context, ArrayList<HashMap<String, Object>> userArrayList, FirebaseService firebaseService) {
         mContext = context;
         mChoiceArrayList = userArrayList;
         mFirebaseService = firebaseService;
@@ -40,24 +41,18 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull DetailViewHolder holder, int position) {
-        Choice choice = mChoiceArrayList.get(position);
+        HashMap<String, Object> hashMap = mChoiceArrayList.get(position);
 
-        mFirebaseService.getUserDatabaseById(choice.getEmail(), new BaseFirebase() {
-            @Override
-            public void getHashMapStringObject(HashMap<String, Object> hashMap) {
-                super.getHashMapStringObject(hashMap);
-                String name = Objects.requireNonNull(hashMap.get("name")).toString();
-                String image = Objects.requireNonNull(hashMap.get("image")).toString();
-                holder.detail.setText(name + " " + mContext.getString(R.string.detail_join));
-                holder.detail.setEnabled(true);
-                holder.detail.setTypeface(Typeface.DEFAULT);
-                if (image.isEmpty()) {
-                    holder.image.setImageResource(R.drawable.ic_workmates);
-                } else {
-                    Glide.with(mContext).load(image).centerCrop().into(holder.image);
-                }
-            }
-        });
+        String name = Objects.requireNonNull(hashMap.get("name")).toString();
+        String image = Objects.requireNonNull(hashMap.get("image")).toString();
+        holder.detail.setText(name + " " + mContext.getString(R.string.detail_join));
+        holder.detail.setEnabled(true);
+        holder.detail.setTypeface(Typeface.DEFAULT);
+        if (image.isEmpty()) {
+            holder.image.setImageResource(R.drawable.ic_workmates);
+        } else {
+            Glide.with(mContext).load(image).centerCrop().into(holder.image);
+        }
     }
 
     @Override

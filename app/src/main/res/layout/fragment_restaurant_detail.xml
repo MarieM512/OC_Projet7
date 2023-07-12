@@ -78,40 +78,39 @@
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/line1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:gravity="center_horizontal">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            app:shapeAppearance="@style/ShapeAppearance.Material3.MediumComponent"
             android:id="@+id/call"
             android:enabled="false"
+            android:layout_weight="1"
+            style="@style/Widget.App.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_call"
-            android:drawableTint="@color/colorPrimary"
-            android:backgroundTint="@color/white"
-            android:text="CALL"
-            android:textColor="@color/colorPrimary" />
+            android:text="@string/call" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            app:shapeAppearance="@style/ShapeAppearance.Material3.MediumComponent"
             android:id="@+id/like"
+            android:layout_weight="1"
+            style="@style/Widget.App.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_like"
-            android:drawableTint="@color/colorPrimary"
-            android:backgroundTint="@color/white"
-            android:text="LIKE"
-            android:textColor="@color/colorPrimary" />
+            android:text="@string/like"/>
 
-        <Button
+        <com.google.android.material.button.MaterialButton
+            app:shapeAppearance="@style/ShapeAppearance.Material3.MediumComponent"
             android:id="@+id/website"
             android:enabled="false"
+            android:layout_weight="1"
+            style="@style/Widget.App.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableTop="@drawable/ic_website"
-            android:drawableTint="@color/colorPrimary"
-            android:backgroundTint="@color/white"
-            android:text="WEBSITE"
-            android:textColor="@color/colorPrimary" />
+            android:text="@string/website" />
 
     </LinearLayout>
 

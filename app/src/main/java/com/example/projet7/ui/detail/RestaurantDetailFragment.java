@@ -34,6 +34,7 @@ public class RestaurantDetailFragment extends Fragment {
     private DetailAdapter mAdapter;
     private String restaurantId;
     private Context mContext;
+    private Integer size;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,15 +74,29 @@ public class RestaurantDetailFragment extends Fragment {
             @Override
             public void getArrayListChoice(ArrayList<Choice> choiceArrayList) {
                 super.getArrayListChoice(choiceArrayList);
-                mAdapter = new DetailAdapter(mContext, choiceArrayList, mFirebaseService);
-                binding.rvDetailWorkmates.setAdapter(mAdapter);
-                mAdapter.notifyDataSetChanged();
-                if (!choiceArrayList.isEmpty()) {
-                    binding.tvEmptyRV.setVisibility(View.GONE);
-                    binding.rvDetailWorkmates.setVisibility(View.VISIBLE);
-                } else {
-                    binding.tvEmptyRV.setVisibility(View.VISIBLE);
-                    binding.rvDetailWorkmates.setVisibility(View.GONE);
+                ArrayList<HashMap<String, Object>> arrayList = new ArrayList<>();
+                size = choiceArrayList.size();
+                for (Choice choice: choiceArrayList) {
+                    mFirebaseService.getUserDatabaseById(choice.getEmail(), new BaseFirebase() {
+                        @Override
+                        public void getHashMapStringObject(HashMap<String, Object> hashMap) {
+                            super.getHashMapStringObject(hashMap);
+                            arrayList.add(hashMap);
+                            size--;
+                            if (size == 0) {
+                                mAdapter = new DetailAdapter(mContext, arrayList, mFirebaseService);
+                                binding.rvDetailWorkmates.setAdapter(mAdapter);
+                                mAdapter.notifyDataSetChanged();
+                                if (!choiceArrayList.isEmpty()) {
+                                    binding.tvEmptyRV.setVisibility(View.GONE);
+                                    binding.rvDetailWorkmates.setVisibility(View.VISIBLE);
+                                } else {
+                                    binding.tvEmptyRV.setVisibility(View.VISIBLE);
+                                    binding.rvDetailWorkmates.setVisibility(View.GONE);
+                                }
+                            }
+                        }
+                    });
                 }
             }
         });

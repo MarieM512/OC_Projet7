@@ -53,4 +53,11 @@
     <style name="ThemeOverlay.App.Switch" parent="">
         <item name="colorPrimary">@color/colorPrimary</item>
     </style>
+    
+    <!-- Button -->
+    <style name="Widget.App.Button" parent="Widget.Material3.Button">
+        <item name="backgroundTint">@color/button_state_color</item>
+        <item name="android:textColor">@color/button_text_state_color</item>
+        <item name="drawableTint">@color/button_text_state_color</item>
+    </style>
 </resources>
