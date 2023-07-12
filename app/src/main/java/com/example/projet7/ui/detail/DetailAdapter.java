@@ -22,6 +22,7 @@ import java.util.Objects;
 public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
 
     private final Context mContext;
+
     private final ArrayList<HashMap<String,Object>> mChoiceArrayList;
     private final FirebaseService mFirebaseService;
 
