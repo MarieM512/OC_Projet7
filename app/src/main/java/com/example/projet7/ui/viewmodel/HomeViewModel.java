@@ -66,7 +66,6 @@ public class HomeViewModel extends ViewModel {
         this.mRestaurantRepository = restaurantRepository;
         this.mFirebaseService = firebaseService;
         mUser = firebaseUser;
-        Log.d(TAG, "HomeViewModel: " );
     }
 
     /* Google Maps */
@@ -183,7 +182,7 @@ public class HomeViewModel extends ViewModel {
                 String positionString = marker.getId().substring(1);
                 Integer position = Integer.parseInt(positionString);
                 NavController navController = Navigation.findNavController(activity, R.id.nav_host_fragment);
-                goToRestaurantById(navController, true, position);
+                navController.navigate(R.id.nav_detail,goToRestaurantById(true, position));
                 return false;
             }
         });
@@ -291,7 +290,7 @@ public class HomeViewModel extends ViewModel {
         return lunch;
     }
 
-    public void goToRestaurantById(NavController navController, Boolean byPosition, Object idPosition) {
+    public Bundle goToRestaurantById(Boolean byPosition, Object idPosition) {
         Bundle bundle = new Bundle();
         if (byPosition) {
             int position = (Integer) idPosition;
@@ -308,6 +307,6 @@ public class HomeViewModel extends ViewModel {
             bundle.putString("address", getLunchById(id).get("address"));
             bundle.putString("image", getLunchById(id).get("image"));
         }
-        navController.navigate(R.id.nav_detail, bundle);
+        return bundle;
     }
 }

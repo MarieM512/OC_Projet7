@@ -75,6 +75,6 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
     @Override
     public void onItemClick(int position) {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
-        viewModel.goToRestaurantById(navController, true, position);
+        navController.navigate(R.id.nav_detail, viewModel.goToRestaurantById(true, position));
     }
 }

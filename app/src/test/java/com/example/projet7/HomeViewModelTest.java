@@ -1,6 +1,8 @@
 package com.example.projet7;
 
 import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
 
 import com.example.projet7.data.OkhttpService;
 import com.example.projet7.data.RestaurantRepository;
@@ -120,6 +122,38 @@ public class HomeViewModelTest {
         hashMap.put("address", "10211 S De Anza Blvd");
         hashMap.put("image", "ImgDetail");
         Assert.assertEquals(result, hashMap);
+    }
+
+    @Test
+    public void goToRestaurantById() {
+        Bundle result = viewModel.goToRestaurantById(false, "44a27278f964a520da341fe3");
+        Bundle bundle = new Bundle();
+        bundle.putString("id", "44a27278f964a520da341fe3");
+        bundle.putString("name", "Sushi Kuni");
+        bundle.putString("type", "Sushi Restaurant");
+        bundle.putString("address", "10211 S De Anza Blvd");
+        bundle.putString("image", "ImgDetail");
+        Assert.assertEquals(result.get("id"), bundle.get("id"));
+        Assert.assertEquals(result.get("name"), bundle.get("name"));
+        Assert.assertEquals(result.get("type"), bundle.get("type"));
+        Assert.assertEquals(result.get("address"), bundle.get("address"));
+        Assert.assertEquals(result.get("image"), bundle.get("image"));
+    }
+
+    @Test
+    public void goToRestaurantByPosition() {
+        Bundle result = viewModel.goToRestaurantById(true, 0);
+        Bundle bundle = new Bundle();
+        bundle.putString("id", "44a27278f964a520da341fe3");
+        bundle.putString("name", "Sushi Kuni");
+        bundle.putString("type", "Sushi Restaurant");
+        bundle.putString("address", "10211 S De Anza Blvd");
+        bundle.putString("image", "ImgDetail");
+        Assert.assertEquals(result.get("id"), bundle.get("id"));
+        Assert.assertEquals(result.get("name"), bundle.get("name"));
+        Assert.assertEquals(result.get("type"), bundle.get("type"));
+        Assert.assertEquals(result.get("address"), bundle.get("address"));
+        Assert.assertEquals(result.get("image"), bundle.get("image"));
     }
 
     /* Current User */

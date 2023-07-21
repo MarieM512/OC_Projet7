@@ -102,7 +102,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     super.getHashMapStringString(hashMap);
                     if (!Objects.equals(hashMap.get(viewModel.getEmailUser()), "")) {
                         String id = hashMap.get(viewModel.getEmailUser());
-                        viewModel.goToRestaurantById(mNavController, false, id);
+                        mNavController.navigate(R.id.nav_detail, viewModel.goToRestaurantById(false, id));
                         binding.drawer.closeDrawer(GravityCompat.START);
                     } else {
                         Toast.makeText(getBaseContext(), getString(R.string.message_no_lunch_selected), Toast.LENGTH_SHORT).show();
@@ -150,7 +150,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if (mNavController.getCurrentDestination().getDisplayName().endsWith("nav_map")) {
                     viewModel.getMarker(queryString);
                 } else {
-                    viewModel.goToRestaurantById(mNavController, false, viewModel.getLunchByName(queryString).get("id"));
+                    mNavController.navigate(R.id.nav_detail, viewModel.goToRestaurantById(false, viewModel.getLunchByName(queryString).get("id")));
                 }
                 searchView.setQuery("", false);
                 searchView.setIconified(true);
