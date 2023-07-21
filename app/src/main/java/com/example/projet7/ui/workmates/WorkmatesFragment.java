@@ -102,6 +102,6 @@ public class WorkmatesFragment extends Fragment implements RecyclerViewItemClick
 
     @Override
     public void clickListener(String id) {
-        viewModel.goToRestaurantById(mNavController, false, id);
+        mNavController.navigate(R.id.nav_detail, viewModel.goToRestaurantById(false, id));
     }
 }

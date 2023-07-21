@@ -14,6 +14,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import com.example.projet7.firebase.FirebaseService;
 import com.example.projet7.injection.ViewModelFactory;
 import com.example.projet7.model.Restaurant;
 import com.example.projet7.ui.viewmodel.HomeViewModel;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
@@ -102,7 +104,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                     super.getHashMapStringString(hashMap);
                     if (!Objects.equals(hashMap.get(viewModel.getEmailUser()), "")) {
                         String id = hashMap.get(viewModel.getEmailUser());
-                        viewModel.goToRestaurantById(mNavController, false, id);
+                        mNavController.navigate(R.id.nav_detail, viewModel.goToRestaurantById(false, id));
                         binding.drawer.closeDrawer(GravityCompat.START);
                     } else {
                         Toast.makeText(getBaseContext(), getString(R.string.message_no_lunch_selected), Toast.LENGTH_SHORT).show();
@@ -113,7 +115,14 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
             mNavController.navigate(R.id.nav_parameter);
             binding.drawer.closeDrawer(GravityCompat.START);
         } else if (item.getItemId() == R.id.nav_logout) {
-            viewModel.logout(getBaseContext(), this);
+            AuthUI.getInstance().signOut(getBaseContext())
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            this.finish();
+                        } else {
+                            Log.d("Logout", String.valueOf(task.getException()));
+                        }
+                    });
         }
         return true;
     }
@@ -150,7 +159,7 @@ public class HomeActivity extends AppCompatActivity implements NavigationView.On
                 if (mNavController.getCurrentDestination().getDisplayName().endsWith("nav_map")) {
                     viewModel.getMarker(queryString);
                 } else {
-                    viewModel.goToRestaurantById(mNavController, false, viewModel.getLunchByName(queryString).get("id"));
+                    mNavController.navigate(R.id.nav_detail, viewModel.goToRestaurantById(false, viewModel.getLunchByName(queryString).get("id")));
                 }
                 searchView.setQuery("", false);
                 searchView.setIconified(true);
