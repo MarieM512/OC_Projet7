@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.projet7.R;
 import com.example.projet7.model.Restaurant;
-import com.example.projet7.ui.viewmodel.HomeViewModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder> {
@@ -22,15 +22,13 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     private final Context mContext;
     private final List<Restaurant> mRestaurantList;
     private final RecyclerViewInterface mRecyclerViewInterface;
-    private final ArrayList<Integer> mIntegerArrayList;
-    private final HomeViewModel mViewModel;
+    private final ArrayList<HashMap<String, Object>> mArrayList;
 
-    public RestaurantAdapter(Context context, List<Restaurant> restaurantList, RecyclerViewInterface recyclerViewInterface, HomeViewModel viewModel, ArrayList<Integer> integerArrayList) {
+    public RestaurantAdapter(Context context, List<Restaurant> restaurantList, RecyclerViewInterface recyclerViewInterface, ArrayList<HashMap<String, Object>> arrayList) {
         mContext = context;
         mRestaurantList = restaurantList;
         mRecyclerViewInterface = recyclerViewInterface;
-        mIntegerArrayList = integerArrayList;
-        mViewModel = viewModel;
+        mArrayList = arrayList;
     }
 
     @NonNull
@@ -43,7 +41,7 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
     @Override
     public void onBindViewHolder(@NonNull RestaurantViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        Integer size = mIntegerArrayList.get(position);
+        Integer size = (Integer) mArrayList.get(position).get("size");
         if (size > 0) {
             holder.reserved.setVisibility(View.VISIBLE);
             holder.reserved.setText("(" + size + ")");
@@ -51,11 +49,11 @@ public class RestaurantAdapter extends RecyclerView.Adapter<RestaurantViewHolder
             holder.reserved.setVisibility(View.INVISIBLE);
         }
 
-        holder.name.setText(mViewModel.getName(position));
-        holder.detail.setText(mViewModel.getType(position));
-        holder.address.setText(mViewModel.getAddress(position));
-        Glide.with(mContext).load(mViewModel.getImgRV(position)).centerCrop().into(holder.image);
-        holder.distance.setText(mViewModel.getDistance(position));
+        holder.name.setText(mArrayList.get(position).get("name").toString());
+        holder.detail.setText(mArrayList.get(position).get("detail").toString());
+        holder.address.setText(mArrayList.get(position).get("address").toString());
+        Glide.with(mContext).load(mArrayList.get(position).get("img")).centerCrop().into(holder.image);
+        holder.distance.setText(mArrayList.get(position).get("distance").toString());
         holder.itemView.setOnClickListener(v -> {
             mRecyclerViewInterface.onItemClick(position);
         });

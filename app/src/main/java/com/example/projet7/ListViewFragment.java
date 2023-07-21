@@ -23,6 +23,7 @@ import com.example.projet7.ui.viewmodel.HomeViewModel;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ListViewFragment extends Fragment implements RecyclerViewInterface {
@@ -30,7 +31,7 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
     private FragmentListViewBinding binding;
     private HomeViewModel viewModel;
 
-    private ArrayList<Integer> mIntegerArrayList;
+    private ArrayList<HashMap<String, Object>> mArrayList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
 
         viewModel = new ViewModelProvider(requireActivity(), getDefaultViewModelProviderFactory()).get(HomeViewModel.class);
         FirebaseService firebaseService = FirebaseService.getInstance();
-        mIntegerArrayList = new ArrayList<>();
+        mArrayList = new ArrayList<>();
 
         if (viewModel.getRestaurants() == null) {
             binding.tvEmpty.setVisibility(View.VISIBLE);
@@ -56,14 +57,21 @@ public class ListViewFragment extends Fragment implements RecyclerViewInterface 
             binding.rvRestaurant.setVisibility(View.VISIBLE);
 
             for (Restaurant restaurant: restaurants) {
+                HashMap<String, Object> hashMap = new HashMap<>();
                 firebaseService.getUserNumberForRestaurant(restaurant.getFsq_id(), viewModel.getEmailUser(), new BaseFirebase() {
                     @Override
                     public void getSize(int size) {
                         super.getSize(size);
-                        mIntegerArrayList.add(size);
-                        if (mIntegerArrayList.size() == restaurants.size()) {
+                        hashMap.put("size", size);
+                        hashMap.put("name", restaurant.getName());
+                        hashMap.put("detail", restaurant.getCategories().get(0).getName());
+                        hashMap.put("address", restaurant.getLocation().getAddress());
+                        hashMap.put("distance", restaurant.getDistance());
+                        hashMap.put("img", viewModel.getImgRVByName(restaurant.getName()));
+                        mArrayList.add(hashMap);
+                        if (mArrayList.size() == restaurants.size()) {
                             binding.rvRestaurant.setLayoutManager(new LinearLayoutManager(requireContext()));
-                            binding.rvRestaurant.setAdapter(new RestaurantAdapter(requireContext(), restaurants, ListViewFragment.this::onItemClick, viewModel, mIntegerArrayList));
+                            binding.rvRestaurant.setAdapter(new RestaurantAdapter(requireContext(), restaurants, ListViewFragment.this::onItemClick, mArrayList));
                         }
                     }
                 });

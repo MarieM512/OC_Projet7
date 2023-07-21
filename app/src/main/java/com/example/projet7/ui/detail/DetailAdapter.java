@@ -24,12 +24,10 @@ public class DetailAdapter extends RecyclerView.Adapter<DetailViewHolder> {
     private final Context mContext;
 
     private final ArrayList<HashMap<String,Object>> mChoiceArrayList;
-    private final FirebaseService mFirebaseService;
 
-    public DetailAdapter(Context context, ArrayList<HashMap<String, Object>> userArrayList, FirebaseService firebaseService) {
+    public DetailAdapter(Context context, ArrayList<HashMap<String, Object>> userArrayList) {
         mContext = context;
         mChoiceArrayList = userArrayList;
-        mFirebaseService = firebaseService;
     }
 
     @NonNull

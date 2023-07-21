@@ -84,7 +84,7 @@ public class RestaurantDetailFragment extends Fragment {
                             arrayList.add(hashMap);
                             size--;
                             if (size == 0) {
-                                mAdapter = new DetailAdapter(mContext, arrayList, mFirebaseService);
+                                mAdapter = new DetailAdapter(mContext, arrayList);
                                 binding.rvDetailWorkmates.setAdapter(mAdapter);
                                 mAdapter.notifyDataSetChanged();
                                 if (!choiceArrayList.isEmpty()) {

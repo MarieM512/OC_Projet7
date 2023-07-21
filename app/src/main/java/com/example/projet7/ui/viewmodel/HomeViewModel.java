@@ -260,6 +260,10 @@ public class HomeViewModel extends ViewModel {
         return mRestaurantRepository.getImgRV(getName(position));
     }
 
+    public String getImgRVByName(String name) {
+        return mRestaurantRepository.getImgRV(name);
+    }
+
     /* Refactor */
 
     public HashMap<String, String> getLunchById(String id) {

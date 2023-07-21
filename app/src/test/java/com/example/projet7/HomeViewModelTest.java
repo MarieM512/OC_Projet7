@@ -103,6 +103,12 @@ public class HomeViewModelTest {
     }
 
     @Test
+    public void getUrlImgRVByName() {
+        String url = viewModel.getImgRVByName("Sushi Kuni");
+        Assert.assertEquals(url, "ImgRV");
+    }
+
+    @Test
     public void getLunchById() {
         HashMap<String, String> result = viewModel.getLunchById("44a27278f964a520da341fe3");
         HashMap<String, String> hashMap = new HashMap<>();
