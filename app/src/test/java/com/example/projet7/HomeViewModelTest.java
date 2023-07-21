@@ -2,14 +2,11 @@ package com.example.projet7;
 
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.projet7.data.OkhttpService;
 import com.example.projet7.data.RestaurantRepository;
-import com.example.projet7.firebase.FirebaseService;
 import com.example.projet7.ui.viewmodel.HomeViewModel;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -25,21 +22,16 @@ import java.util.HashMap;
 public class HomeViewModelTest {
 
     OkhttpService mOkhttpService = Mockito.mock(OkhttpService.class);
-    FirebaseFirestore mFirebaseFirestore = Mockito.mock(FirebaseFirestore.class);
     FirebaseUser mFirebaseUser = Mockito.mock(FirebaseUser.class);
 
     RestaurantRepository mRestaurantRepository;
-    FirebaseService mFirebaseService;
     HomeViewModel viewModel;
-
 
     @Before
     public void setup() {
         MockitoAnnotations.openMocks(this);
         mRestaurantRepository = new RestaurantRepository(mOkhttpService);
-
-        mFirebaseService = new FirebaseService(mFirebaseFirestore);
-        viewModel = new HomeViewModel(mRestaurantRepository, mFirebaseService, mFirebaseUser);
+        viewModel = new HomeViewModel(mRestaurantRepository, mFirebaseUser);
 
         String api = "{\"results\":[{\"fsq_id\":\"44a27278f964a520da341fe3\",\"categories\":[{\"id\":13276,\"name\":\"Sushi Restaurant\",\"icon\":{\"prefix\":\"https://ss3.4sqi.net/img/categories_v2/food/sushi_\",\"suffix\":\".png\"}}],\"chains\":[],\"distance\":327,\"geocodes\":{\"main\":{\"latitude\":37.319936,\"longitude\":-122.03291},\"roof\":{\"latitude\":37.319936,\"longitude\":-122.03291}},\"link\":\"/v3/places/44a27278f964a520da341fe3\",\"location\":{\"address\":\"10211 S De Anza Blvd\",\"census_block\":\"060855077013013\",\"country\":\"US\",\"cross_street\":\"\",\"dma\":\"San Francisco-Oakland-San Jose\",\"formatted_address\":\"10211 S De Anza Blvd, Cupertino, CA 95014\",\"locality\":\"Cupertino\",\"postcode\":\"95014\",\"region\":\"CA\"},\"name\":\"Sushi Kuni\",\"related_places\":{},\"timezone\":\"America/Los_Angeles\"}]}";
         Mockito.when(mOkhttpService.getResponseApi()).thenReturn(api);
