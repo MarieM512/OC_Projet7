@@ -52,7 +52,7 @@ public class HomeViewModel extends ViewModel {
 
     private final RestaurantRepository mRestaurantRepository;
     private final FirebaseService mFirebaseService;
-    private final FirebaseUser mUser = FirebaseAuth.getInstance().getCurrentUser();
+    private FirebaseUser mUser;
     private Double latitude = 0.00;
     private Double longitude = 0.00;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -62,9 +62,11 @@ public class HomeViewModel extends ViewModel {
     private Marker mMarker;
     private static final String TAG = "Home ViewModel";
 
-    public HomeViewModel(RestaurantRepository restaurantRepository, FirebaseService firebaseService) {
+    public HomeViewModel(RestaurantRepository restaurantRepository, FirebaseService firebaseService, FirebaseUser firebaseUser) {
         this.mRestaurantRepository = restaurantRepository;
         this.mFirebaseService = firebaseService;
+        mUser = firebaseUser;
+        Log.d(TAG, "HomeViewModel: " );
     }
 
     /* Google Maps */

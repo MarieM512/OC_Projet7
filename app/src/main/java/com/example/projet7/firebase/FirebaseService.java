@@ -21,9 +21,9 @@ import java.util.Objects;
 
 public class FirebaseService {
 
-    private final FirebaseFirestore mFirebaseFirestore = FirebaseFirestore.getInstance();
-    private final CollectionReference users = mFirebaseFirestore.collection("users");
-    private final CollectionReference choice = mFirebaseFirestore.collection("choice");
+    private FirebaseFirestore mFirebaseFirestore;
+    private CollectionReference users;
+    private CollectionReference choice;
     private static volatile FirebaseService INSTANCE = null;
     private static final String TAG = "Firebase Service";
     private ArrayList<Choice> mChoiceArrayList;
@@ -31,6 +31,12 @@ public class FirebaseService {
     private HomeViewModel viewModel;
     public String name;
     public String address;
+
+    public FirebaseService(FirebaseFirestore firebaseFirestore) {
+        mFirebaseFirestore = firebaseFirestore;
+        users = mFirebaseFirestore.collection("users");
+        choice = mFirebaseFirestore.collection("choice");
+    }
 
     @SuppressLint("SimpleDateFormat")
     private final SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
@@ -40,7 +46,7 @@ public class FirebaseService {
         if (INSTANCE == null) {
             synchronized (FirebaseService.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = new FirebaseService();
+                    INSTANCE = new FirebaseService(FirebaseFirestore.getInstance());
                 }
             }
         }
